@@ -1,0 +1,34 @@
+<svg width="1200" height="300" viewBox="0 0 1200 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="300" rx="18" fill="#0d1117"/>
+
+  <g opacity="0.35">
+    <path d="M80 80 L180 130 L300 70 L430 120 L560 65 L700 130 L850 80 L1020 140 L1120 75" stroke="#30363d" stroke-width="2"/>
+    <path d="M120 210 L260 160 L390 220 L520 150 L680 205 L810 145 L970 220 L1100 170" stroke="#30363d" stroke-width="2"/>
+    <circle cx="80" cy="80" r="4" fill="#58a6ff"/>
+    <circle cx="180" cy="130" r="4" fill="#58a6ff"/>
+    <circle cx="300" cy="70" r="4" fill="#58a6ff"/>
+    <circle cx="430" cy="120" r="4" fill="#58a6ff"/>
+    <circle cx="560" cy="65" r="4" fill="#58a6ff"/>
+    <circle cx="700" cy="130" r="4" fill="#58a6ff"/>
+    <circle cx="850" cy="80" r="4" fill="#58a6ff"/>
+    <circle cx="1020" cy="140" r="4" fill="#58a6ff"/>
+    <circle cx="1120" cy="75" r="4" fill="#58a6ff"/>
+  </g>
+
+  <text x="70" y="125" fill="#f0f6fc" font-size="48" font-family="Arial, Helvetica, sans-serif" font-weight="700">
+    Hey! I am Yaroslav
+  </text>
+
+  <text x="72" y="170" fill="#58a6ff" font-size="28" font-family="Arial, Helvetica, sans-serif">
+    Java Backend Developer
+  </text>
+
+  <text x="72" y="215" fill="#8b949e" font-size="20" font-family="Arial, Helvetica, sans-serif">
+    Spring Boot • PostgreSQL • Kafka • Docker • Linux • Observability
+  </text>
+
+  <circle cx="1040" cy="145" r="70" fill="#161b22" stroke="#30363d" stroke-width="3"/>
+  <text x="1000" y="160" fill="#58a6ff" font-size="52" font-family="Arial, Helvetica, sans-serif" font-weight="700">
+    Sss
+  </text>
+</svg>
