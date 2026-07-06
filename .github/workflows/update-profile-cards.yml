@@ -19,33 +19,266 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Create profile directory
-        run: mkdir -p profile
-
-      - name: Download GitHub stats card
+      - name: Generate profile cards
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_USERNAME: Sss330
         run: |
-          curl -fL --retry 5 --retry-delay 10 \
-            "https://github-readme-stats.vercel.app/api?username=Sss330&show_icons=true&theme=github_dark&hide_border=true&count_private=true&card_width=495&custom_title=Yaroslav%27s%20GitHub%20Stats" \
-            -o profile/stats.svg
+          mkdir -p profile
 
-          grep -q "<svg" profile/stats.svg
+          cat > generate_profile_cards.py <<'PY'
+          import os
+          import json
+          import math
+          import datetime
+          import urllib.request
 
-      - name: Download top languages card
-        run: |
-          curl -fL --retry 5 --retry-delay 10 \
-            "https://github-readme-stats.vercel.app/api/top-langs/?username=Sss330&theme=github_dark&hide_border=true&layout=donut&langs_count=5&card_width=350&custom_title=Most%20Used%20Languages" \
-            -o profile/top-langs.svg
+          USERNAME = os.environ["GITHUB_USERNAME"]
+          TOKEN = os.environ["GITHUB_TOKEN"]
 
-          grep -q "<svg" profile/top-langs.svg
+          API_URL = "https://api.github.com/graphql"
 
-      - name: Download WakaTime card
-        continue-on-error: true
-        run: |
-          curl -fL --retry 5 --retry-delay 10 \
-            "https://github-readme-stats.vercel.app/api/wakatime?username=Sss330&theme=github_dark&hide_border=true&card_width=495&custom_title=WakaTime%20Stats" \
-            -o profile/wakatime.svg
+          now = datetime.datetime.utcnow()
+          year_ago = now - datetime.timedelta(days=365)
 
-          grep -q "<svg" profile/wakatime.svg
+          query = """
+          query($login: String!, $from: DateTime!, $to: DateTime!) {
+            user(login: $login) {
+              login
+              name
+              repositories(first: 100, ownerAffiliations: OWNER, privacy: PUBLIC) {
+                totalCount
+                nodes {
+                  name
+                  stargazerCount
+                  forkCount
+                  languages(first: 10, orderBy: {field: SIZE, direction: DESC}) {
+                    edges {
+                      size
+                      node {
+                        name
+                        color
+                      }
+                    }
+                  }
+                }
+              }
+              contributionsCollection(from: $from, to: $to) {
+                contributionCalendar {
+                  totalContributions
+                }
+                totalCommitContributions
+                totalIssueContributions
+                totalPullRequestContributions
+                totalPullRequestReviewContributions
+              }
+            }
+          }
+          """
+
+          payload = {
+              "query": query,
+              "variables": {
+                  "login": USERNAME,
+                  "from": year_ago.isoformat() + "Z",
+                  "to": now.isoformat() + "Z",
+              },
+          }
+
+          request = urllib.request.Request(
+              API_URL,
+              data=json.dumps(payload).encode("utf-8"),
+              headers={
+                  "Authorization": f"Bearer {TOKEN}",
+                  "Content-Type": "application/json",
+              },
+          )
+
+          with urllib.request.urlopen(request) as response:
+              result = json.loads(response.read().decode("utf-8"))
+
+          if "errors" in result:
+              raise RuntimeError(result["errors"])
+
+          user = result["data"]["user"]
+          repos = user["repositories"]["nodes"]
+          repo_count = user["repositories"]["totalCount"]
+
+          total_stars = sum(repo["stargazerCount"] for repo in repos)
+          total_forks = sum(repo["forkCount"] for repo in repos)
+
+          contributions = user["contributionsCollection"]
+          total_contributions = contributions["contributionCalendar"]["totalContributions"]
+          total_commits = contributions["totalCommitContributions"]
+          total_prs = contributions["totalPullRequestContributions"]
+          total_issues = contributions["totalIssueContributions"]
+          total_reviews = contributions["totalPullRequestReviewContributions"]
+
+          if total_contributions >= 1000:
+              grade = "S"
+          elif total_contributions >= 500:
+              grade = "A+"
+          elif total_contributions >= 200:
+              grade = "A"
+          elif total_contributions >= 100:
+              grade = "B+"
+          elif total_contributions >= 50:
+              grade = "B"
+          else:
+              grade = "C"
+
+          def write_stats_svg():
+              svg = f'''<svg width="495" height="165" viewBox="0 0 495 165" fill="none" xmlns="http://www.w3.org/2000/svg" role="img">
+            <style>
+              .header {{ font: 600 18px 'Segoe UI', Ubuntu, Sans-Serif; fill: #58A6FF; }}
+              .stat {{ font: 600 13px 'Segoe UI', Ubuntu, Sans-Serif; fill: #C3D1D9; }}
+              .value {{ font: 700 13px 'Segoe UI', Ubuntu, Sans-Serif; fill: #F0F6FC; }}
+              .grade {{ font: 700 28px 'Segoe UI', Ubuntu, Sans-Serif; fill: #C3D1D9; }}
+              .icon {{ fill: #58A6FF; }}
+            </style>
+
+            <rect x="0.5" y="0.5" rx="4.5" width="494" height="164" fill="#0D1117" stroke="#30363D" stroke-opacity="0"/>
+
+            <text x="25" y="35" class="header">Yaroslav's GitHub Stats</text>
+
+            <text x="25" y="62" class="stat">★ Total Stars Earned:</text>
+            <text x="230" y="62" class="value">{total_stars}</text>
+
+            <text x="25" y="84" class="stat">⑂ Total Repositories:</text>
+            <text x="230" y="84" class="value">{repo_count}</text>
+
+            <text x="25" y="106" class="stat">◌ Contributions last year:</text>
+            <text x="230" y="106" class="value">{total_contributions}</text>
+
+            <text x="25" y="128" class="stat">⑂ Commits last year:</text>
+            <text x="230" y="128" class="value">{total_commits}</text>
+
+            <text x="300" y="62" class="stat">⑂ Pull Requests:</text>
+            <text x="445" y="62" class="value">{total_prs}</text>
+
+            <text x="300" y="84" class="stat">● Issues:</text>
+            <text x="445" y="84" class="value">{total_issues}</text>
+
+            <text x="300" y="106" class="stat">◆ Reviews:</text>
+            <text x="445" y="106" class="value">{total_reviews}</text>
+
+            <circle cx="370" cy="125" r="28" fill="none" stroke="#388BFD" stroke-width="6"/>
+            <text x="352" y="134" class="grade">{grade}</text>
+          </svg>'''
+
+              with open("profile/stats.svg", "w", encoding="utf-8") as file:
+                  file.write(svg)
+
+          language_stats = {}
+
+          for repo in repos:
+              for edge in repo["languages"]["edges"]:
+                  lang = edge["node"]["name"]
+                  color = edge["node"]["color"] or "#8B949E"
+                  size = edge["size"]
+
+                  if lang not in language_stats:
+                      language_stats[lang] = {"size": 0, "color": color}
+
+                  language_stats[lang]["size"] += size
+
+          top_languages = sorted(
+              language_stats.items(),
+              key=lambda item: item[1]["size"],
+              reverse=True
+          )[:5]
+
+          total_language_size = sum(item[1]["size"] for item in top_languages) or 1
+
+          def arc_path(cx, cy, r, start_angle, end_angle):
+              start = math.radians(start_angle)
+              end = math.radians(end_angle)
+
+              x1 = cx + r * math.cos(start)
+              y1 = cy + r * math.sin(start)
+              x2 = cx + r * math.cos(end)
+              y2 = cy + r * math.sin(end)
+
+              large_arc = 1 if end_angle - start_angle > 180 else 0
+
+              return f"M {x1:.2f} {y1:.2f} A {r} {r} 0 {large_arc} 1 {x2:.2f} {y2:.2f}"
+
+          def write_top_languages_svg():
+              rows = []
+              donut = []
+
+              start_angle = -90
+
+              for index, (lang, data) in enumerate(top_languages):
+                  percent = data["size"] / total_language_size * 100
+                  color = data["color"]
+                  y = 62 + index * 23
+
+                  rows.append(f'''
+            <circle cx="30" cy="{y - 4}" r="5" fill="{color}" />
+            <text x="45" y="{y}" class="lang">{lang} {percent:.2f}%</text>''')
+
+                  end_angle = start_angle + percent / 100 * 360
+
+                  donut.append(f'''
+            <path d="{arc_path(260, 92, 48, start_angle, end_angle)}"
+                  stroke="{color}"
+                  stroke-width="12"
+                  fill="none"
+                  stroke-linecap="butt" />''')
+
+                  start_angle = end_angle
+
+              svg = f'''<svg width="350" height="165" viewBox="0 0 350 165" fill="none" xmlns="http://www.w3.org/2000/svg" role="img">
+            <style>
+              .header {{ font: 600 18px 'Segoe UI', Ubuntu, Sans-Serif; fill: #58A6FF; }}
+              .lang {{ font: 400 11px 'Segoe UI', Ubuntu, Sans-Serif; fill: #C3D1D9; }}
+            </style>
+
+            <rect x="0.5" y="0.5" rx="4.5" width="349" height="164" fill="#0D1117" stroke="#30363D" stroke-opacity="0"/>
+
+            <text x="25" y="35" class="header">Most Used Languages</text>
+
+            {''.join(rows)}
+
+            <circle cx="260" cy="92" r="48" fill="none" stroke="#30363D" stroke-width="12"/>
+            {''.join(donut)}
+          </svg>'''
+
+              with open("profile/top-langs.svg", "w", encoding="utf-8") as file:
+                  file.write(svg)
+
+          def write_wakatime_placeholder_svg():
+              svg = '''<svg width="495" height="165" viewBox="0 0 495 165" fill="none" xmlns="http://www.w3.org/2000/svg" role="img">
+            <style>
+              .header { font: 600 18px 'Segoe UI', Ubuntu, Sans-Serif; fill: #58A6FF; }
+              .text { font: 500 13px 'Segoe UI', Ubuntu, Sans-Serif; fill: #C3D1D9; }
+              .muted { font: 400 12px 'Segoe UI', Ubuntu, Sans-Serif; fill: #8B949E; }
+            </style>
+
+            <rect x="0.5" y="0.5" rx="4.5" width="494" height="164" fill="#0D1117" stroke="#30363D" stroke-opacity="0"/>
+
+            <text x="25" y="35" class="header">Coding Activity</text>
+
+            <rect x="25" y="58" width="445" height="8" rx="4" fill="#30363D"/>
+            <rect x="25" y="58" width="240" height="8" rx="4" fill="#58A6FF"/>
+            <rect x="265" y="58" width="95" height="8" rx="4" fill="#39D353"/>
+            <rect x="360" y="58" width="70" height="8" rx="4" fill="#F0883E"/>
+
+            <text x="25" y="92" class="text">Java • Spring Boot • PostgreSQL • Kafka • Docker</text>
+            <text x="25" y="118" class="muted">WakaTime can be connected later with API token.</text>
+            <text x="25" y="140" class="muted">For now this card is generated locally by GitHub Actions.</text>
+          </svg>'''
+
+              with open("profile/wakatime.svg", "w", encoding="utf-8") as file:
+                  file.write(svg)
+
+          write_stats_svg()
+          write_top_languages_svg()
+          write_wakatime_placeholder_svg()
+          PY
+
+          python3 generate_profile_cards.py
 
       - name: Commit updated cards
         run: |
