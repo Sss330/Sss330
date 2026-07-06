@@ -1,5 +1,36 @@
-The deployment is currently unavailable
+<svg width="350" height="165" viewBox="0 0 350 165" fill="none" xmlns="http://www.w3.org/2000/svg" role="img">
+  <style>
+    .header { font: 600 18px 'Segoe UI', Ubuntu, Sans-Serif; fill: #58A6FF; }
+    .lang { font: 400 11px 'Segoe UI', Ubuntu, Sans-Serif; fill: #C3D1D9; }
+  </style>
 
-DEPLOYMENT_PAUSED
+  <rect x="0.5" y="0.5" rx="4.5" width="349" height="164" fill="#0D1117" stroke="#30363D" stroke-opacity="0"/>
 
-sfo1::msl8q-1783346130369-08678d2e5328
+  <text x="25" y="35" class="header">Most Used Languages</text>
+
+  
+  <circle cx="30" cy="58" r="5" fill="#b07219" />
+  <text x="45" y="62" class="lang">Java 88.43%</text>
+  <circle cx="30" cy="81" r="5" fill="#00ADD8" />
+  <text x="45" y="85" class="lang">Go 10.98%</text>
+  <circle cx="30" cy="104" r="5" fill="#384d54" />
+  <text x="45" y="108" class="lang">Dockerfile 0.59%</text>
+
+  <circle cx="260" cy="92" r="48" fill="none" stroke="#30363D" stroke-width="12"/>
+  
+  <path d="M 260.00 44.00 A 48 48 0 1 1 228.11 56.13"
+        stroke="#b07219"
+        stroke-width="12"
+        fill="none"
+        stroke-linecap="butt" />
+  <path d="M 228.11 56.13 A 48 48 0 0 1 258.23 44.03"
+        stroke="#00ADD8"
+        stroke-width="12"
+        fill="none"
+        stroke-linecap="butt" />
+  <path d="M 258.23 44.03 A 48 48 0 0 1 260.00 44.00"
+        stroke="#384d54"
+        stroke-width="12"
+        fill="none"
+        stroke-linecap="butt" />
+</svg>

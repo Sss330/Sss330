@@ -1,5 +1,37 @@
-The deployment is currently unavailable
+<svg width="495" height="165" viewBox="0 0 495 165" fill="none" xmlns="http://www.w3.org/2000/svg" role="img">
+  <style>
+    .header { font: 600 18px 'Segoe UI', Ubuntu, Sans-Serif; fill: #58A6FF; }
+    .stat { font: 600 13px 'Segoe UI', Ubuntu, Sans-Serif; fill: #C3D1D9; }
+    .value { font: 700 13px 'Segoe UI', Ubuntu, Sans-Serif; fill: #F0F6FC; }
+    .grade { font: 700 28px 'Segoe UI', Ubuntu, Sans-Serif; fill: #C3D1D9; }
+    .icon { fill: #58A6FF; }
+  </style>
 
-DEPLOYMENT_PAUSED
+  <rect x="0.5" y="0.5" rx="4.5" width="494" height="164" fill="#0D1117" stroke="#30363D" stroke-opacity="0"/>
 
-sfo1::mmrpr-1783346130303-dbed1011d14f
+  <text x="25" y="35" class="header">Yaroslav's GitHub Stats</text>
+
+  <text x="25" y="62" class="stat">★ Total Stars Earned:</text>
+  <text x="230" y="62" class="value">6</text>
+
+  <text x="25" y="84" class="stat">⑂ Total Repositories:</text>
+  <text x="230" y="84" class="value">7</text>
+
+  <text x="25" y="106" class="stat">◌ Contributions last year:</text>
+  <text x="230" y="106" class="value">39</text>
+
+  <text x="25" y="128" class="stat">⑂ Commits last year:</text>
+  <text x="230" y="128" class="value">31</text>
+
+  <text x="300" y="62" class="stat">⑂ Pull Requests:</text>
+  <text x="445" y="62" class="value">0</text>
+
+  <text x="300" y="84" class="stat">● Issues:</text>
+  <text x="445" y="84" class="value">0</text>
+
+  <text x="300" y="106" class="stat">◆ Reviews:</text>
+  <text x="445" y="106" class="value">0</text>
+
+  <circle cx="370" cy="125" r="28" fill="none" stroke="#388BFD" stroke-width="6"/>
+  <text x="352" y="134" class="grade">C</text>
+</svg>

@@ -1,5 +1,20 @@
-The deployment is currently unavailable
+<svg width="495" height="165" viewBox="0 0 495 165" fill="none" xmlns="http://www.w3.org/2000/svg" role="img">
+  <style>
+    .header { font: 600 18px 'Segoe UI', Ubuntu, Sans-Serif; fill: #58A6FF; }
+    .text { font: 500 13px 'Segoe UI', Ubuntu, Sans-Serif; fill: #C3D1D9; }
+    .muted { font: 400 12px 'Segoe UI', Ubuntu, Sans-Serif; fill: #8B949E; }
+  </style>
 
-DEPLOYMENT_PAUSED
+  <rect x="0.5" y="0.5" rx="4.5" width="494" height="164" fill="#0D1117" stroke="#30363D" stroke-opacity="0"/>
 
-sfo1::gfsxj-1783346130419-5e4c90c155f9
+  <text x="25" y="35" class="header">Coding Activity</text>
+
+  <rect x="25" y="58" width="445" height="8" rx="4" fill="#30363D"/>
+  <rect x="25" y="58" width="240" height="8" rx="4" fill="#58A6FF"/>
+  <rect x="265" y="58" width="95" height="8" rx="4" fill="#39D353"/>
+  <rect x="360" y="58" width="70" height="8" rx="4" fill="#F0883E"/>
+
+  <text x="25" y="92" class="text">Java • Spring Boot • PostgreSQL • Kafka • Docker</text>
+  <text x="25" y="118" class="muted">WakaTime can be connected later with API token.</text>
+  <text x="25" y="140" class="muted">For now this card is generated locally by GitHub Actions.</text>
+</svg>
