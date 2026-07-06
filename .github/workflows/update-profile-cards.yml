@@ -1,6 +1,9 @@
 name: Update profile cards
 
 on:
+  push:
+    branches:
+      - main
   schedule:
     - cron: "0 */12 * * *"
   workflow_dispatch:
@@ -21,21 +24,15 @@ jobs:
 
       - name: Download GitHub stats card
         run: |
-          curl -L \
-            "https://github-readme-stats.vercel.app/api?username=Sss330&show_icons=true&theme=github_dark&hide_border=true&count_private=true&card_width=495&custom_title=Yaroslav%27s%20GitHub%20Stats" \
-            -o profile/stats.svg
+          curl -L "https://github-readme-stats.vercel.app/api?username=Sss330&show_icons=true&theme=github_dark&hide_border=true&count_private=true&card_width=495&custom_title=Yaroslav%27s%20GitHub%20Stats" -o profile/stats.svg
 
       - name: Download top languages card
         run: |
-          curl -L \
-            "https://github-readme-stats.vercel.app/api/top-langs/?username=Sss330&theme=github_dark&hide_border=true&layout=donut&langs_count=5&card_width=350&custom_title=Most%20Used%20Languages" \
-            -o profile/top-langs.svg
+          curl -L "https://github-readme-stats.vercel.app/api/top-langs/?username=Sss330&theme=github_dark&hide_border=true&layout=donut&langs_count=5&card_width=350&custom_title=Most%20Used%20Languages" -o profile/top-langs.svg
 
       - name: Download WakaTime card
         run: |
-          curl -L \
-            "https://github-readme-stats.vercel.app/api/wakatime?username=Sss330&theme=github_dark&hide_border=true&card_width=495&custom_title=WakaTime%20Stats" \
-            -o profile/wakatime.svg
+          curl -L "https://github-readme-stats.vercel.app/api/wakatime?username=Sss330&theme=github_dark&hide_border=true&card_width=495&custom_title=WakaTime%20Stats" -o profile/wakatime.svg
 
       - name: Commit updated cards
         run: |
