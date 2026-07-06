@@ -1,0 +1,46 @@
+name: Update profile cards
+
+on:
+  schedule:
+    - cron: "0 */12 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-cards:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create profile directory
+        run: mkdir -p profile
+
+      - name: Download GitHub stats card
+        run: |
+          curl -L \
+            "https://github-readme-stats.vercel.app/api?username=Sss330&show_icons=true&theme=github_dark&hide_border=true&count_private=true&card_width=495&custom_title=Yaroslav%27s%20GitHub%20Stats" \
+            -o profile/stats.svg
+
+      - name: Download top languages card
+        run: |
+          curl -L \
+            "https://github-readme-stats.vercel.app/api/top-langs/?username=Sss330&theme=github_dark&hide_border=true&layout=donut&langs_count=5&card_width=350&custom_title=Most%20Used%20Languages" \
+            -o profile/top-langs.svg
+
+      - name: Download WakaTime card
+        run: |
+          curl -L \
+            "https://github-readme-stats.vercel.app/api/wakatime?username=Sss330&theme=github_dark&hide_border=true&card_width=495&custom_title=WakaTime%20Stats" \
+            -o profile/wakatime.svg
+
+      - name: Commit updated cards
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add profile/*.svg
+          git commit -m "Update profile cards" || exit 0
+          git push
