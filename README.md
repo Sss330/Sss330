@@ -92,31 +92,6 @@ Architecture             Clean code, modular services, integrations
 
 </div>
 
----
-
-## 🚀 Current focus
-
-```java
-public class CurrentFocus {
-    private final String mainLanguage = "Java";
-    private final String mainFramework = "Spring Boot";
-
-    private final List<String> learning = List.of(
-        "System Design",
-        "Distributed Systems",
-        "Algorithms",
-        "Backend Architecture",
-        "Go"
-    );
-
-    private final List<String> interests = List.of(
-        "Production-ready services",
-        "Observability",
-        "Performance",
-        "Clean code"
-    );
-}
-```
 
 ---
 
