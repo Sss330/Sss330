@@ -1,66 +1,65 @@
-<svg width="1100" height="330" viewBox="0 0 1100 330" fill="none" xmlns="http://www.w3.org/2000/svg" role="img">
+<svg width="1100" height="255" viewBox="0 0 1100 255" fill="none" xmlns="http://www.w3.org/2000/svg" role="img">
   <style>
-    .header { font: 700 24px 'Segoe UI', Ubuntu, Sans-Serif; fill: #58A6FF; }
-    .stat { font: 600 15px 'Segoe UI', Ubuntu, Sans-Serif; fill: #C3D1D9; }
-    .value { font: 700 15px 'Segoe UI', Ubuntu, Sans-Serif; fill: #F0F6FC; }
-    .lang { font: 500 17px 'Segoe UI', Ubuntu, Sans-Serif; fill: #C3D1D9; }
-    .big { font: 800 34px 'Segoe UI', Ubuntu, Sans-Serif; fill: #F0F6FC; }
-    .label { font: 600 13px 'Segoe UI', Ubuntu, Sans-Serif; fill: #C3D1D9; }
-    .muted { font: 400 12px 'Segoe UI', Ubuntu, Sans-Serif; fill: #8B949E; }
-    .grade { font: 800 32px 'Segoe UI', Ubuntu, Sans-Serif; fill: #C3D1D9; }
+    .header { font: 700 22px 'Segoe UI', Ubuntu, Sans-Serif; fill: #58A6FF; }
+    .stat { font: 600 14px 'Segoe UI', Ubuntu, Sans-Serif; fill: #C3D1D9; }
+    .value { font: 700 14px 'Segoe UI', Ubuntu, Sans-Serif; fill: #F0F6FC; }
+    .lang { font: 500 15px 'Segoe UI', Ubuntu, Sans-Serif; fill: #C3D1D9; }
+    .big { font: 800 30px 'Segoe UI', Ubuntu, Sans-Serif; fill: #F0F6FC; }
+    .label { font: 600 12px 'Segoe UI', Ubuntu, Sans-Serif; fill: #C3D1D9; }
+    .grade { font: 800 30px 'Segoe UI', Ubuntu, Sans-Serif; fill: #C3D1D9; }
   </style>
 
-  <rect x="0" y="0" width="1100" height="330" fill="#0D1117"/>
+  <rect x="0" y="0" width="1100" height="255" fill="#0D1117"/>
 
-  <text x="70" y="45" class="header">Yaroslav's GitHub Stats</text>
+  <text x="60" y="38" class="header">Yaroslav's GitHub Stats</text>
   
-  <text x="70" y="90" class="stat">★ Total Stars Earned:</text>
-  <text x="330" y="90" class="value">6</text>
-  <text x="70" y="116" class="stat">⑂ Total Repositories:</text>
-  <text x="330" y="116" class="value">7</text>
-  <text x="70" y="142" class="stat">◌ Contributions last year:</text>
-  <text x="330" y="142" class="value">50</text>
-  <text x="70" y="168" class="stat">↳ Commits last year:</text>
-  <text x="330" y="168" class="value">42</text>
+  <text x="60" y="72" class="stat">★ Total Stars Earned:</text>
+  <text x="325" y="72" class="value">6</text>
+  <text x="60" y="96" class="stat">⑂ Total Repositories:</text>
+  <text x="325" y="96" class="value">7</text>
+  <text x="60" y="120" class="stat">◌ Contributions last year:</text>
+  <text x="325" y="120" class="value">51</text>
+  <text x="60" y="144" class="stat">↳ Commits last year:</text>
+  <text x="325" y="144" class="value">43</text>
 
-  <circle cx="530" cy="132" r="33" fill="none" stroke="#58A6FF" stroke-width="8"/>
-  <text x="509" y="143" class="grade">B</text>
+  <circle cx="500" cy="112" r="31" fill="none" stroke="#58A6FF" stroke-width="7"/>
+  <text x="481" y="122" class="grade">B</text>
 
-  <text x="680" y="45" class="header">Most Used Languages</text>
+  <text x="660" y="38" class="header">Most Used Languages</text>
   
-  <circle cx="685" cy="85" r="7" fill="#b07219" />
-  <text x="705" y="90" class="lang">Java 88.43%</text>
-  <circle cx="685" cy="113" r="7" fill="#00ADD8" />
-  <text x="705" y="118" class="lang">Go 10.98%</text>
+  <circle cx="665" cy="67" r="6" fill="#b07219" />
+  <text x="685" y="72" class="lang">Java 88.43%</text>
+  <circle cx="665" cy="93" r="6" fill="#00ADD8" />
+  <text x="685" y="98" class="lang">Go 10.98%</text>
 
-  <circle cx="960" cy="128" r="62" fill="none" stroke="#30363D" stroke-width="16"/>
+  <circle cx="925" cy="112" r="55" fill="none" stroke="#30363D" stroke-width="14"/>
   
-  <path d="M 960.00 66.00 A 62 62 0 1 1 918.81 81.66"
+  <path d="M 925.00 57.00 A 55 55 0 1 1 888.46 70.89"
         stroke="#b07219"
-        stroke-width="16"
+        stroke-width="14"
         fill="none"
         stroke-linecap="butt" />
-  <path d="M 918.81 81.66 A 62 62 0 0 1 957.72 66.04"
+  <path d="M 888.46 70.89 A 55 55 0 0 1 922.98 57.04"
         stroke="#00ADD8"
-        stroke-width="16"
+        stroke-width="14"
         fill="none"
         stroke-linecap="butt" />
 
-  <line x1="70" y1="220" x2="1030" y2="220" stroke="#30363D" stroke-width="4"/>
+  <line x1="60" y1="174" x2="1040" y2="174" stroke="#30363D" stroke-width="3"/>
 
-  <g transform="translate(290 260)">
-    <text x="0" y="0" class="big">50</text>
-    <text x="-18" y="28" class="label">Total Contributions</text>
+  <g transform="translate(300 220)">
+    <text x="0" y="0" class="big">51</text>
+    <text x="-28" y="24" class="label">Total Contributions</text>
   </g>
 
-  <g transform="translate(535 260)">
-    <circle cx="0" cy="-12" r="38" fill="none" stroke="#58A6FF" stroke-width="8"/>
-    <text x="-10" y="0" class="big">2</text>
-    <text x="-42" y="38" class="label">Current Streak</text>
+  <g transform="translate(535 220)">
+    <circle cx="0" cy="-10" r="33" fill="none" stroke="#58A6FF" stroke-width="7"/>
+    <text x="-9" y="0" class="big">2</text>
+    <text x="-38" y="34" class="label">Current Streak</text>
   </g>
 
-  <g transform="translate(775 260)">
+  <g transform="translate(780 220)">
     <text x="0" y="0" class="big">3</text>
-    <text x="-20" y="28" class="label">Longest Streak</text>
+    <text x="-23" y="24" class="label">Longest Streak</text>
   </g>
 </svg>
