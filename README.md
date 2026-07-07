@@ -42,6 +42,4 @@
   <img src="https://img.shields.io/badge/typescript-161b22?style=for-the-badge&logo=typescript" alt="TypeScript" />
 </p>
 
----
-
 <br />
