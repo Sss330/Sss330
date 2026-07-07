@@ -2,14 +2,10 @@
   <img src="./assets/banner.svg" alt="Yaroslav GitHub Banner" width="100%" />
 </p>
 
-<br />
-
 <p align="center">
   <img src="./profile/stats.svg" alt="Yaroslav's GitHub Stats" width="56%" />
   <img src="./profile/top-langs.svg" alt="Most Used Languages" width="40%" />
 </p>
-
----
 
 #### Have the most experience with
 
@@ -34,9 +30,16 @@
   <img src="https://img.shields.io/badge/linux-161b22?style=for-the-badge&logo=linux" alt="Linux" />
 </p>
 
-#### Frontend 
+#### Frontend
 
 <p align="left">
   <img src="https://img.shields.io/badge/angular-161b22?style=for-the-badge&logo=angular" alt="Angular" />
   <img src="https://img.shields.io/badge/typescript-161b22?style=for-the-badge&logo=typescript" alt="TypeScript" />
+</p>
+
+---
+
+<p align="center">
+  <img src="./profile/wakatime.svg" alt="WakaTime Stats" width="56%" />
+  <img src="./profile/streak.svg" alt="GitHub Streak" width="40%" />
 </p>
