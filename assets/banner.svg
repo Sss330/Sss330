@@ -1,34 +1,59 @@
 <svg width="1200" height="300" viewBox="0 0 1200 300" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="1200" height="300" rx="18" fill="#0d1117"/>
+  <rect width="1200" height="300" rx="18" fill="#0D1117"/>
 
-  <g opacity="0.35">
-    <path d="M80 80 L180 130 L300 70 L430 120 L560 65 L700 130 L850 80 L1020 140 L1120 75" stroke="#30363d" stroke-width="2"/>
-    <path d="M120 210 L260 160 L390 220 L520 150 L680 205 L810 145 L970 220 L1100 170" stroke="#30363d" stroke-width="2"/>
-    <circle cx="80" cy="80" r="4" fill="#58a6ff"/>
-    <circle cx="180" cy="130" r="4" fill="#58a6ff"/>
-    <circle cx="300" cy="70" r="4" fill="#58a6ff"/>
-    <circle cx="430" cy="120" r="4" fill="#58a6ff"/>
-    <circle cx="560" cy="65" r="4" fill="#58a6ff"/>
-    <circle cx="700" cy="130" r="4" fill="#58a6ff"/>
-    <circle cx="850" cy="80" r="4" fill="#58a6ff"/>
-    <circle cx="1020" cy="140" r="4" fill="#58a6ff"/>
-    <circle cx="1120" cy="75" r="4" fill="#58a6ff"/>
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#58A6FF" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#0D1117" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <circle cx="965" cy="145" r="190" fill="url(#glow)"/>
+
+  <g opacity="0.40">
+    <path d="M70 80 L170 130 L300 70 L430 120 L560 65 L700 130 L860 80 L1010 140 L1120 75" stroke="#30363D" stroke-width="2"/>
+    <path d="M120 210 L260 160 L390 220 L520 150 L680 205 L810 145 L970 220 L1100 170" stroke="#30363D" stroke-width="2"/>
+    <path d="M70 80 L120 210" stroke="#30363D" stroke-width="1"/>
+    <path d="M170 130 L260 160" stroke="#30363D" stroke-width="1"/>
+    <path d="M300 70 L390 220" stroke="#30363D" stroke-width="1"/>
+    <path d="M430 120 L520 150" stroke="#30363D" stroke-width="1"/>
+    <path d="M560 65 L680 205" stroke="#30363D" stroke-width="1"/>
+    <path d="M700 130 L810 145" stroke="#30363D" stroke-width="1"/>
+    <path d="M860 80 L970 220" stroke="#30363D" stroke-width="1"/>
+    <path d="M1010 140 L1100 170" stroke="#30363D" stroke-width="1"/>
+
+    <circle cx="70" cy="80" r="4" fill="#58A6FF"/>
+    <circle cx="170" cy="130" r="4" fill="#58A6FF"/>
+    <circle cx="300" cy="70" r="4" fill="#58A6FF"/>
+    <circle cx="430" cy="120" r="4" fill="#58A6FF"/>
+    <circle cx="560" cy="65" r="4" fill="#58A6FF"/>
+    <circle cx="700" cy="130" r="4" fill="#58A6FF"/>
+    <circle cx="860" cy="80" r="4" fill="#58A6FF"/>
+    <circle cx="1010" cy="140" r="4" fill="#58A6FF"/>
+    <circle cx="1120" cy="75" r="4" fill="#58A6FF"/>
   </g>
 
-  <text x="70" y="125" fill="#f0f6fc" font-size="48" font-family="Arial, Helvetica, sans-serif" font-weight="700">
-    Hey! I am Yaroslav
+  <text x="70" y="145" fill="#F0F6FC" font-size="44" font-family="Arial, Helvetica, sans-serif" font-weight="700">
+    Hi there! I`m Yarosav
   </text>
 
-  <text x="72" y="170" fill="#58a6ff" font-size="28" font-family="Arial, Helvetica, sans-serif">
-    Java Backend Developer
+  <text x="72" y="190" fill="#58A6FF" font-size="24" font-family="Arial, Helvetica, sans-serif" font-weight="600">
+     Back-end developer
   </text>
 
-  <text x="72" y="215" fill="#8b949e" font-size="20" font-family="Arial, Helvetica, sans-serif">
-    Spring Boot • PostgreSQL • Kafka • Docker • Linux • Observability
-  </text>
+  <rect x="910" y="78" width="150" height="150" rx="75" fill="#161B22" stroke="#30363D" stroke-width="3"/>
 
-  <circle cx="1040" cy="145" r="70" fill="#161b22" stroke="#30363d" stroke-width="3"/>
-  <text x="1000" y="160" fill="#58a6ff" font-size="52" font-family="Arial, Helvetica, sans-serif" font-weight="700">
-    Sss
-  </text>
+  <circle cx="985" cy="153" r="60" stroke="#58A6FF" stroke-opacity="0.15" stroke-width="2"/>
+  <circle cx="985" cy="153" r="44" stroke="#58A6FF" stroke-opacity="0.10" stroke-width="1.5"/>
+
+  <path d="M962 170 V136" stroke="#58A6FF" stroke-width="4" stroke-linecap="round"/>
+  <path d="M962 136 H1005" stroke="#58A6FF" stroke-width="4" stroke-linecap="round"/>
+  <path d="M985 136 V170" stroke="#58A6FF" stroke-width="4" stroke-linecap="round"/>
+  <path d="M985 170 H1010" stroke="#58A6FF" stroke-width="4" stroke-linecap="round"/>
+
+  <circle cx="962" cy="170" r="7" fill="#0D1117" stroke="#58A6FF" stroke-width="3"/>
+  <circle cx="962" cy="136" r="7" fill="#0D1117" stroke="#58A6FF" stroke-width="3"/>
+  <circle cx="985" cy="136" r="7" fill="#0D1117" stroke="#58A6FF" stroke-width="3"/>
+  <circle cx="985" cy="170" r="7" fill="#0D1117" stroke="#58A6FF" stroke-width="3"/>
+  <circle cx="1010" cy="170" r="7" fill="#0D1117" stroke="#58A6FF" stroke-width="3"/>
 </svg>
