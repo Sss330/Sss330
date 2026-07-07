@@ -5,16 +5,10 @@
     .muted { font: 400 12px 'Segoe UI', Ubuntu, Sans-Serif; fill: #8B949E; }
   </style>
 
-  <rect x="0.5" y="0.5" rx="4.5" width="494" height="164" fill="#0D1117" stroke="#30363D" stroke-opacity="0"/>
+  <rect x="0.5" y="0.5" rx="4.5" height="99%" width="494" fill="#0D1117" stroke="#e4e2e2" stroke-opacity="0" />
 
-  <text x="25" y="35" class="header">Coding Activity</text>
-
-  <rect x="25" y="58" width="445" height="8" rx="4" fill="#30363D"/>
-  <rect x="25" y="58" width="240" height="8" rx="4" fill="#58A6FF"/>
-  <rect x="265" y="58" width="95" height="8" rx="4" fill="#39D353"/>
-  <rect x="360" y="58" width="70" height="8" rx="4" fill="#F0883E"/>
-
-  <text x="25" y="92" class="text">Java • Spring Boot • PostgreSQL • Kafka • Docker</text>
-  <text x="25" y="118" class="muted">WakaTime can be connected later with API token.</text>
-  <text x="25" y="140" class="muted">For now this card is generated locally by GitHub Actions.</text>
+  <text x="25" y="35" class="header">WakaTime Stats</text>
+  <text x="25" y="75" class="text">WakaTime is not connected yet.</text>
+  <text x="25" y="100" class="muted">Add WAKATIME_API_KEY to GitHub Actions secrets.</text>
+  <text x="25" y="122" class="muted">After that, this card will show real coding time.</text>
 </svg>

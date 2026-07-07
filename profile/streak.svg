@@ -1,0 +1,73 @@
+<svg
+  width="350"
+  height="165"
+  viewBox="0 0 350 165"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+  role="img"
+>
+  <style>
+    .header {
+      font: 600 18px 'Segoe UI', Ubuntu, Sans-Serif;
+      fill: #58A6FF;
+      animation: fadeInAnimation 0.8s ease-in-out forwards;
+    }
+
+    .big {
+      font: 800 28px 'Segoe UI', Ubuntu, Sans-Serif;
+      fill: #F0F6FC;
+      text-anchor: middle;
+      dominant-baseline: middle;
+    }
+
+    .label {
+      font: 600 11px 'Segoe UI', Ubuntu, Sans-Serif;
+      fill: #C3D1D9;
+      text-anchor: middle;
+    }
+
+    .muted {
+      font: 400 10px 'Segoe UI', Ubuntu, Sans-Serif;
+      fill: #8B949E;
+      text-anchor: middle;
+    }
+
+    .ring {
+      stroke: #58A6FF;
+      fill: none;
+      stroke-width: 6;
+      stroke-linecap: round;
+      opacity: 0.85;
+      animation: fadeInAnimation 0.8s ease-in-out forwards;
+    }
+
+    @keyframes fadeInAnimation {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  </style>
+
+  <rect x="0.5" y="0.5" rx="4.5" height="99%" width="349" fill="#0D1117" stroke="#e4e2e2" stroke-opacity="0" />
+
+  <g transform="translate(25, 35)">
+    <text x="0" y="0" class="header">GitHub Streak</text>
+  </g>
+
+  <g transform="translate(70, 95)">
+    <text x="0" y="0" class="big">70</text>
+    <text x="0" y="28" class="label">Total Contributions</text>
+    <text x="0" y="47" class="muted">last year</text>
+  </g>
+
+  <g transform="translate(175, 95)">
+    <circle cx="0" cy="-5" r="33" class="ring" />
+    <text x="0" y="-5" class="big">2</text>
+    <text x="0" y="45" class="label">Current Streak</text>
+  </g>
+
+  <g transform="translate(285, 95)">
+    <text x="0" y="0" class="big">3</text>
+    <text x="0" y="28" class="label">Longest Streak</text>
+    <text x="0" y="47" class="muted">last year</text>
+  </g>
+</svg>

@@ -5,48 +5,14 @@
   fill="none"
   xmlns="http://www.w3.org/2000/svg"
   role="img"
-  aria-labelledby="descId"
 >
-  <title id="titleId">Most Used Languages for Yaroslav</title>
-  <desc id="descId">Java 88.43%, Go 10.98%</desc>
+  <title>Most Used Languages</title>
+
   <style>
     .header {
       font: 600 18px 'Segoe UI', Ubuntu, Sans-Serif;
       fill: #58A6FF;
       animation: fadeInAnimation 0.8s ease-in-out forwards;
-    }
-    @supports(-moz-appearance: auto) {
-      .header { font-size: 15.5px; }
-    }
-
-    @keyframes slideInAnimation {
-      from {
-        width: 0;
-      }
-      to {
-        width: calc(100%-100px);
-      }
-    }
-
-    @keyframes growWidthAnimation {
-      from {
-        width: 0;
-      }
-      to {
-        width: 100%;
-      }
-    }
-
-    .stat {
-      font: 600 14px 'Segoe UI', Ubuntu, "Helvetica Neue", Sans-Serif;
-      fill: #C3D1D9;
-    }
-    @supports(-moz-appearance: auto) {
-      .stat { font-size:12px; }
-    }
-
-    .bold {
-      font-weight: 700;
     }
 
     .lang-name {
@@ -59,100 +25,45 @@
       animation: fadeInAnimation 0.3s ease-in-out forwards;
     }
 
-    #rect-mask rect {
-      animation: slideInAnimation 1s ease-in-out forwards;
-    }
-
-    .lang-progress {
-      animation: growWidthAnimation 0.6s ease-in-out forwards;
-    }
-
-    @keyframes scaleInAnimation {
-      from {
-        transform: translate(-5px, 5px) scale(0);
-      }
-      to {
-        transform: translate(-5px, 5px) scale(1);
-      }
-    }
-
     @keyframes fadeInAnimation {
-      from {
-        opacity: 0;
-      }
-      to {
-        opacity: 1;
-      }
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
   </style>
 
-  <rect
-    data-testid="card-bg"
-    x="0.5"
-    y="0.5"
-    rx="4.5"
-    height="99%"
-    stroke="#e4e2e2"
-    width="349"
-    fill="#0D1117"
-    stroke-opacity="0"
-  />
+  <rect x="0.5" y="0.5" rx="4.5" height="99%" width="349" fill="#0D1117" stroke="#e4e2e2" stroke-opacity="0" />
 
-  <g data-testid="card-title" transform="translate(25, 35)">
-    <g transform="translate(0, 0)">
-      <text x="0" y="0" class="header" data-testid="header">Most Used Languages</text>
-    </g>
+  <g transform="translate(25, 35)">
+    <text x="0" y="0" class="header">Most Used Languages</text>
   </g>
 
-  <g data-testid="main-card-body" transform="translate(0, 55)">
-    <svg data-testid="lang-items" x="25">
+  <g transform="translate(0, 55)">
+    <svg x="25">
       <g transform="translate(0, 0)">
+        
         <g transform="translate(0, 0)">
-          <g transform="translate(0, 0)">
-            
-      <g transform="translate(0, 0)">
-        <g class="stagger" style="animation-delay: 450ms">
-          <circle cx="5" cy="6" r="5" fill="#b07219" />
-          <text data-testid="lang-name" x="15" y="10" class="lang-name">
-            Java 88.43%
-          </text>
-        </g>
-      </g>
-      <g transform="translate(0, 32)">
-        <g class="stagger" style="animation-delay: 600ms">
-          <circle cx="5" cy="6" r="5" fill="#00ADD8" />
-          <text data-testid="lang-name" x="15" y="10" class="lang-name">
-            Go 10.98%
-          </text>
-        </g>
-      </g>
+          <g class="stagger" style="animation-delay: 450ms">
+            <circle cx="5" cy="6" r="5" fill="#b07219" />
+            <text x="15" y="10" class="lang-name">Java 88.43%</text>
           </g>
+        </g>
+        <g transform="translate(0, 32)">
+          <g class="stagger" style="animation-delay: 600ms">
+            <circle cx="5" cy="6" r="5" fill="#00ADD8" />
+            <text x="15" y="10" class="lang-name">Go 10.98%</text>
+          </g>
+        </g>
 
-          <g transform="translate(125, -45)">
-            <svg width="350" height="350">
-              
+        <g transform="translate(125, -45)">
+          <svg width="350" height="350">
+            
         <g class="stagger" style="animation-delay: 600ms">
-          <path
-            data-testid="lang-donut"
-            size="88.43"
-            d="M 116.66666666666667 60.0 A 56.66666666666667 56.66666666666667 0 1 1 79.01653194731944 74.31600590764054"
-            stroke="#b07219"
-            fill="none"
-            stroke-width="12">
-          </path>
+          <path d="M 116.67 60.00 A 56.66666666666667 56.66666666666667 0 1 1 79.02 74.32" stroke="#b07219" fill="none" stroke-width="12"></path>
         </g>
         <g class="stagger" style="animation-delay: 700ms">
-          <path
-            data-testid="lang-donut"
-            size="10.98"
-            d="M 79.01653194731944 74.31600590764054 A 56.66666666666667 56.66666666666667 0 0 1 114.5827648151799 60.038330436608824"
-            stroke="#00ADD8"
-            fill="none"
-            stroke-width="12">
-          </path>
+          <path d="M 79.02 74.32 A 56.66666666666667 56.66666666666667 0 0 1 114.58 60.04" stroke="#00ADD8" fill="none" stroke-width="12"></path>
         </g>
-            </svg>
-          </g>
+          </svg>
         </g>
       </g>
     </svg>
