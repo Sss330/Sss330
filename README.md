@@ -3,16 +3,7 @@
 </p>
 
 <p align="center">
-  <img src="./profile/stats.svg" alt="GitHub stats" width="48%" />
-  <img src="./profile/top-langs.svg" alt="Most used languages" width="48%" />
-</p>
-
-<p align="center">
-  <img
-    src="https://streak-stats.demolab.com?user=Sss330&theme=github-dark&hide_border=true&background=0D1117&stroke=0D1117&ring=58A6FF&fire=58A6FF&currStreakLabel=C3D1D9&sideLabels=C3D1D9&dates=8B949E&sideNums=F0F6FC&currStreakNum=F0F6FC"
-    alt="GitHub streak"
-    width="60%"
-  />
+  <img src="./profile/overview.svg" alt="GitHub profile overview" width="100%" />
 </p>
 
 ---
