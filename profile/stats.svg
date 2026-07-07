@@ -18,10 +18,10 @@
   <text x="230" y="84" class="value">7</text>
 
   <text x="25" y="106" class="stat">◌ Contributions last year:</text>
-  <text x="230" y="106" class="value">39</text>
+  <text x="230" y="106" class="value">41</text>
 
   <text x="25" y="128" class="stat">⑂ Commits last year:</text>
-  <text x="230" y="128" class="value">31</text>
+  <text x="230" y="128" class="value">33</text>
 
   <text x="300" y="62" class="stat">⑂ Pull Requests:</text>
   <text x="445" y="62" class="value">0</text>
