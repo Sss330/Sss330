@@ -4,13 +4,17 @@
 
 <div align="center">
 
-### Java Backend Developer
+## Java Backend Developer
 
 </div>
 
 <p align="center">
-  <img height="165" src="./profile/stats.svg" alt="GitHub stats" />
-  <img height="165" src="./profile/top-langs.svg" alt="Most used languages" />
+  <img src="./profile/stats.svg" alt="GitHub stats" width="48%" />
+  <img src="./profile/top-langs.svg" alt="Most used languages" width="48%" />
+</p>
+
+<p align="center">
+  <img src="https://streak-stats.demolab.com?user=Sss330&theme=github-dark&hide_border=true&ring=58A6FF&fire=58A6FF&currStreakLabel=C3D1D9&sideLabels=C3D1D9&dates=8B949E&sideNums=F0F6FC&currStreakNum=F0F6FC" alt="GitHub streak" width="60%" />
 </p>
 
 ---
@@ -38,3 +42,5 @@
 
 [![Angular](https://img.shields.io/badge/angular-161b22?style=for-the-badge&logo=angular)](https://angular.dev/)
 [![TypeScript](https://img.shields.io/badge/typescript-161b22?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
+
+---
