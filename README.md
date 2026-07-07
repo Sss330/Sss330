@@ -4,11 +4,7 @@
 
 <div align="center">
 
-# Hey! I am Yaroslav 👋
-
 ### Java Backend Developer
-
-I build backend services with **Java**, **Spring Boot**, **PostgreSQL**, **Kafka** and **Docker**.
 
 </div>
 
@@ -42,19 +38,3 @@ I build backend services with **Java**, **Spring Boot**, **PostgreSQL**, **Kafka
 
 [![Angular](https://img.shields.io/badge/angular-161b22?style=for-the-badge&logo=angular)](https://angular.dev/)
 [![TypeScript](https://img.shields.io/badge/typescript-161b22?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
-
----
-
-<p align="center">
-  <img height="165" src="./profile/wakatime.svg" alt="WakaTime stats" />
-  <img height="165" src="https://streak-stats.demolab.com?user=Sss330&theme=github-dark&hide_border=true&fire=39D353&stroke=B1BAC400&dates=8B949E&ring=388bfd&card_width=340" alt="GitHub streak" />
-</p>
-
-
-
-<div align="center">
-
-[![Telegram](https://img.shields.io/badge/telegram-JavaDevYaroBel-161b22?style=for-the-badge&logo=telegram)](https://t.me/JavaDevYaroBel)
-[![GitHub](https://img.shields.io/badge/github-Sss330-161b22?style=for-the-badge&logo=github)](https://github.com/Sss330)
-
-</div>
