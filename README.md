@@ -5,10 +5,9 @@
 <br />
 
 <p align="center">
-  <img src="./profile/overview.svg" alt="GitHub profile overview" width="92%" />
+  <img src="./profile/stats.svg" alt="Yaroslav GitHub Stats" width="56%" />
+  <img src="./profile/top-langs.svg" alt="Most Used Languages" width="40%" />
 </p>
-
-<br />
 
 ---
 
@@ -41,5 +40,3 @@
   <img src="https://img.shields.io/badge/angular-161b22?style=for-the-badge&logo=angular" alt="Angular" />
   <img src="https://img.shields.io/badge/typescript-161b22?style=for-the-badge&logo=typescript" alt="TypeScript" />
 </p>
-
-<br />
