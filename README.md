@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <img src="./profile/overview.svg" alt="GitHub profile overview" width="100%" />
+  <img src="./profile/overview.svg" alt="GitHub profile overview" width="94%" />
 </p>
 
 ---
