@@ -45,14 +45,3 @@
 ---
 
 <br />
-
-<div align="center">
-
-<a href="https://t.me/JavaDevYaroBel">
-  <img src="https://img.shields.io/badge/telegram-JavaDevYaroBel-161b22?style=for-the-badge&logo=telegram" alt="Telegram" />
-</a>
-<a href="https://github.com/Sss330">
-  <img src="https://img.shields.io/badge/github-Sss330-161b22?style=for-the-badge&logo=github" alt="GitHub" />
-</a>
-
-</div>
