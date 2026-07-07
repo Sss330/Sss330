@@ -22,7 +22,7 @@
   <img src="https://img.shields.io/badge/docker-161b22?style=for-the-badge&logo=docker" alt="Docker" />
 </p>
 
-#### Used a few times, but don't really know what I'm doing
+#### Side stack
 
 <p align="left">
   <img src="https://img.shields.io/badge/hibernate-161b22?style=for-the-badge&logo=hibernate" alt="Hibernate" />
@@ -34,7 +34,7 @@
   <img src="https://img.shields.io/badge/linux-161b22?style=for-the-badge&logo=linux" alt="Linux" />
 </p>
 
-#### Frontend when needed
+#### Frontend 
 
 <p align="left">
   <img src="https://img.shields.io/badge/angular-161b22?style=for-the-badge&logo=angular" alt="Angular" />
