@@ -10,7 +10,7 @@
 
   <text x="25" y="35" class="header">Yaroslav's GitHub Stats</text>
 
-  <text x="25" y="62" class="stat">★ Total Stars Earned:</text><text x="230" y="62" class="value">6</text><text x="25" y="84" class="stat">⑂ Total Repositories:</text><text x="230" y="84" class="value">7</text><text x="25" y="106" class="stat">◌ Contributions last year:</text><text x="230" y="106" class="value">44</text><text x="25" y="128" class="stat">↳ Commits last year:</text><text x="230" y="128" class="value">36</text>
+  <text x="25" y="62" class="stat">★ Total Stars Earned:</text><text x="230" y="62" class="value">6</text><text x="25" y="84" class="stat">⑂ Total Repositories:</text><text x="230" y="84" class="value">7</text><text x="25" y="106" class="stat">◌ Contributions last year:</text><text x="230" y="106" class="value">45</text><text x="25" y="128" class="stat">↳ Commits last year:</text><text x="230" y="128" class="value">37</text>
   
 
   <circle cx="410" cy="118" r="28" fill="none" stroke="#388BFD" stroke-width="6"/>
