@@ -36,6 +36,7 @@ jobs:
 
           USERNAME = os.environ["GITHUB_USERNAME"]
           TOKEN = os.environ["GITHUB_TOKEN"]
+
           API_URL = "https://api.github.com/graphql"
 
           now = datetime.datetime.utcnow()
@@ -104,6 +105,7 @@ jobs:
               raise RuntimeError(result["errors"])
 
           user = result["data"]["user"]
+
           repos = user["repositories"]["nodes"]
           repo_count = user["repositories"]["totalCount"]
 
@@ -231,28 +233,28 @@ jobs:
           def stat_row(label, value, x, y):
               return f'''
             <text x="{x}" y="{y}" class="stat">{escape(label)}</text>
-            <text x="{x + 260}" y="{y}" class="value">{value}</text>'''
+            <text x="{x + 265}" y="{y}" class="value">{value}</text>'''
 
           stats_rows = []
 
-          stats_rows.append(stat_row("★ Total Stars Earned:", total_stars, 70, 90))
-          stats_rows.append(stat_row("⑂ Total Repositories:", repo_count, 70, 116))
-          stats_rows.append(stat_row("◌ Contributions last year:", total_contributions, 70, 142))
-          stats_rows.append(stat_row("↳ Commits last year:", total_commits, 70, 168))
+          stats_rows.append(stat_row("★ Total Stars Earned:", total_stars, 60, 72))
+          stats_rows.append(stat_row("⑂ Total Repositories:", repo_count, 60, 96))
+          stats_rows.append(stat_row("◌ Contributions last year:", total_contributions, 60, 120))
+          stats_rows.append(stat_row("↳ Commits last year:", total_commits, 60, 144))
 
-          optional_y = 90
+          optional_y = 72
 
           if total_prs > 0:
-              stats_rows.append(stat_row("↱ Pull Requests:", total_prs, 410, optional_y))
-              optional_y += 26
+              stats_rows.append(stat_row("↱ Pull Requests:", total_prs, 420, optional_y))
+              optional_y += 24
 
           if total_issues > 0:
-              stats_rows.append(stat_row("● Issues:", total_issues, 410, optional_y))
-              optional_y += 26
+              stats_rows.append(stat_row("● Issues:", total_issues, 420, optional_y))
+              optional_y += 24
 
           if total_reviews > 0:
-              stats_rows.append(stat_row("◆ Reviews:", total_reviews, 410, optional_y))
-              optional_y += 26
+              stats_rows.append(stat_row("◆ Reviews:", total_reviews, 420, optional_y))
+              optional_y += 24
 
           language_rows = []
           donut_paths = []
@@ -262,72 +264,68 @@ jobs:
           for index, (lang, data) in enumerate(top_languages):
               percent = data["size"] / total_language_size * 100
               color = data["color"]
-              y = 90 + index * 28
+              y = 72 + index * 26
 
               language_rows.append(f'''
-            <circle cx="685" cy="{y - 5}" r="7" fill="{color}" />
-            <text x="705" y="{y}" class="lang">{escape(lang)} {percent:.2f}%</text>''')
+            <circle cx="665" cy="{y - 5}" r="6" fill="{color}" />
+            <text x="685" y="{y}" class="lang">{escape(lang)} {percent:.2f}%</text>''')
 
               end_angle = start_angle + percent / 100 * 360
 
               donut_paths.append(f'''
-            <path d="{arc_path(960, 128, 62, start_angle, end_angle)}"
+            <path d="{arc_path(925, 112, 55, start_angle, end_angle)}"
                   stroke="{color}"
-                  stroke-width="16"
+                  stroke-width="14"
                   fill="none"
                   stroke-linecap="butt" />''')
 
               start_angle = end_angle
 
-          svg = f'''<svg width="1100" height="330" viewBox="0 0 1100 330" fill="none" xmlns="http://www.w3.org/2000/svg" role="img">
+          svg = f'''<svg width="1100" height="255" viewBox="0 0 1100 255" fill="none" xmlns="http://www.w3.org/2000/svg" role="img">
             <style>
-              .header {{ font: 700 24px 'Segoe UI', Ubuntu, Sans-Serif; fill: #58A6FF; }}
-              .stat {{ font: 600 15px 'Segoe UI', Ubuntu, Sans-Serif; fill: #C3D1D9; }}
-              .value {{ font: 700 15px 'Segoe UI', Ubuntu, Sans-Serif; fill: #F0F6FC; }}
-              .lang {{ font: 500 17px 'Segoe UI', Ubuntu, Sans-Serif; fill: #C3D1D9; }}
-              .big {{ font: 800 34px 'Segoe UI', Ubuntu, Sans-Serif; fill: #F0F6FC; }}
-              .label {{ font: 600 13px 'Segoe UI', Ubuntu, Sans-Serif; fill: #C3D1D9; }}
-              .muted {{ font: 400 12px 'Segoe UI', Ubuntu, Sans-Serif; fill: #8B949E; }}
-              .grade {{ font: 800 32px 'Segoe UI', Ubuntu, Sans-Serif; fill: #C3D1D9; }}
+              .header {{ font: 700 22px 'Segoe UI', Ubuntu, Sans-Serif; fill: #58A6FF; }}
+              .stat {{ font: 600 14px 'Segoe UI', Ubuntu, Sans-Serif; fill: #C3D1D9; }}
+              .value {{ font: 700 14px 'Segoe UI', Ubuntu, Sans-Serif; fill: #F0F6FC; }}
+              .lang {{ font: 500 15px 'Segoe UI', Ubuntu, Sans-Serif; fill: #C3D1D9; }}
+              .big {{ font: 800 30px 'Segoe UI', Ubuntu, Sans-Serif; fill: #F0F6FC; }}
+              .label {{ font: 600 12px 'Segoe UI', Ubuntu, Sans-Serif; fill: #C3D1D9; }}
+              .grade {{ font: 800 30px 'Segoe UI', Ubuntu, Sans-Serif; fill: #C3D1D9; }}
             </style>
 
-            <rect x="0" y="0" width="1100" height="330" fill="#0D1117"/>
+            <rect x="0" y="0" width="1100" height="255" fill="#0D1117"/>
 
-            <text x="70" y="45" class="header">Yaroslav's GitHub Stats</text>
+            <text x="60" y="38" class="header">Yaroslav's GitHub Stats</text>
             {''.join(stats_rows)}
 
-            <circle cx="530" cy="132" r="33" fill="none" stroke="#58A6FF" stroke-width="8"/>
-            <text x="509" y="143" class="grade">{grade}</text>
+            <circle cx="500" cy="112" r="31" fill="none" stroke="#58A6FF" stroke-width="7"/>
+            <text x="481" y="122" class="grade">{grade}</text>
 
-            <text x="680" y="45" class="header">Most Used Languages</text>
+            <text x="660" y="38" class="header">Most Used Languages</text>
             {''.join(language_rows)}
 
-            <circle cx="960" cy="128" r="62" fill="none" stroke="#30363D" stroke-width="16"/>
+            <circle cx="925" cy="112" r="55" fill="none" stroke="#30363D" stroke-width="14"/>
             {''.join(donut_paths)}
 
-            <line x1="70" y1="220" x2="1030" y2="220" stroke="#30363D" stroke-width="4"/>
+            <line x1="60" y1="174" x2="1040" y2="174" stroke="#30363D" stroke-width="3"/>
 
-            <g transform="translate(290 260)">
+            <g transform="translate(300 220)">
               <text x="0" y="0" class="big">{total_contributions}</text>
-              <text x="-18" y="28" class="label">Total Contributions</text>
+              <text x="-28" y="24" class="label">Total Contributions</text>
             </g>
 
-            <g transform="translate(535 260)">
-              <circle cx="0" cy="-12" r="38" fill="none" stroke="#58A6FF" stroke-width="8"/>
-              <text x="-10" y="0" class="big">{current_streak}</text>
-              <text x="-42" y="38" class="label">Current Streak</text>
+            <g transform="translate(535 220)">
+              <circle cx="0" cy="-10" r="33" fill="none" stroke="#58A6FF" stroke-width="7"/>
+              <text x="-9" y="0" class="big">{current_streak}</text>
+              <text x="-38" y="34" class="label">Current Streak</text>
             </g>
 
-            <g transform="translate(775 260)">
+            <g transform="translate(780 220)">
               <text x="0" y="0" class="big">{longest_streak}</text>
-              <text x="-20" y="28" class="label">Longest Streak</text>
+              <text x="-23" y="24" class="label">Longest Streak</text>
             </g>
           </svg>'''
 
           with open("profile/overview.svg", "w", encoding="utf-8") as file:
-              file.write(svg)
-
-          with open("profile/stats.svg", "w", encoding="utf-8") as file:
               file.write(svg)
 
           PY
