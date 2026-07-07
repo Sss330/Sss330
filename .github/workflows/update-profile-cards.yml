@@ -19,10 +19,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Generate profile overview
+      - name: Generate animated SVG cards
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_USERNAME: Sss330
+          DISPLAY_NAME: Yaroslav
         run: |
           mkdir -p profile
 
@@ -35,6 +36,7 @@ jobs:
           from xml.sax.saxutils import escape
 
           USERNAME = os.environ["GITHUB_USERNAME"]
+          DISPLAY_NAME = os.environ.get("DISPLAY_NAME", USERNAME)
           TOKEN = os.environ["GITHUB_TOKEN"]
           API_URL = "https://api.github.com/graphql"
 
@@ -60,7 +62,25 @@ jobs:
                   }
                 }
               }
+
+              pullRequests(states: [OPEN, CLOSED, MERGED]) {
+                totalCount
+              }
+
+              mergedPullRequests: pullRequests(states: [MERGED]) {
+                totalCount
+              }
+
+              issues(states: [OPEN, CLOSED]) {
+                totalCount
+              }
+
               contributionsCollection(from: $from, to: $to) {
+                totalCommitContributions
+                totalIssueContributions
+                totalPullRequestContributions
+                totalPullRequestReviewContributions
+
                 contributionCalendar {
                   totalContributions
                   weeks {
@@ -70,10 +90,30 @@ jobs:
                     }
                   }
                 }
-                totalCommitContributions
-                totalIssueContributions
-                totalPullRequestContributions
-                totalPullRequestReviewContributions
+
+                commitContributionsByRepository(maxRepositories: 100) {
+                  repository {
+                    nameWithOwner
+                  }
+                }
+
+                issueContributionsByRepository(maxRepositories: 100) {
+                  repository {
+                    nameWithOwner
+                  }
+                }
+
+                pullRequestContributionsByRepository(maxRepositories: 100) {
+                  repository {
+                    nameWithOwner
+                  }
+                }
+
+                pullRequestReviewContributionsByRepository(maxRepositories: 100) {
+                  repository {
+                    nameWithOwner
+                  }
+                }
               }
             }
           }
@@ -94,7 +134,7 @@ jobs:
               headers={
                   "Authorization": f"Bearer {TOKEN}",
                   "Content-Type": "application/json",
-                  "User-Agent": "profile-overview-generator",
+                  "User-Agent": "profile-cards-generator",
               },
           )
 
@@ -112,69 +152,59 @@ jobs:
           calendar = contributions["contributionCalendar"]
 
           total_stars = sum(repo["stargazerCount"] for repo in repos)
-          total_contributions = calendar["totalContributions"]
-          total_commits = contributions["totalCommitContributions"]
+          total_commits_last_year = contributions["totalCommitContributions"]
+          total_prs = user["pullRequests"]["totalCount"]
+          merged_prs = user["mergedPullRequests"]["totalCount"]
+          merged_prs_percentage = (merged_prs / total_prs * 100) if total_prs else 0
+          total_issues = user["issues"]["totalCount"]
 
-          if total_contributions >= 1000:
+          contributed_repos = set()
+
+          for block_name in [
+              "commitContributionsByRepository",
+              "issueContributionsByRepository",
+              "pullRequestContributionsByRepository",
+              "pullRequestReviewContributionsByRepository",
+          ]:
+              for item in contributions.get(block_name, []):
+                  repo = item.get("repository")
+                  if repo and repo.get("nameWithOwner"):
+                      contributed_repos.add(repo["nameWithOwner"])
+
+          contributed_to_last_year = len(contributed_repos)
+          total_contributions_last_year = calendar["totalContributions"]
+
+          # rank
+          if total_contributions_last_year >= 1000:
               grade = "S"
-          elif total_contributions >= 500:
+          elif total_contributions_last_year >= 500:
               grade = "A+"
-          elif total_contributions >= 200:
+          elif total_contributions_last_year >= 300:
               grade = "A"
-          elif total_contributions >= 100:
+          elif total_contributions_last_year >= 200:
+              grade = "A-"
+          elif total_contributions_last_year >= 100:
               grade = "B+"
-          elif total_contributions >= 50:
+          elif total_contributions_last_year >= 50:
               grade = "B"
+          elif total_contributions_last_year >= 25:
+              grade = "B-"
           else:
               grade = "C"
 
-          contribution_days = []
+          rank_progress_map = {
+              "S": 92,
+              "A+": 84,
+              "A": 76,
+              "A-": 68,
+              "B+": 60,
+              "B": 52,
+              "B-": 44,
+              "C": 34,
+          }
+          rank_progress = rank_progress_map.get(grade, 34)
 
-          for week in calendar["weeks"]:
-              for day in week["contributionDays"]:
-                  contribution_days.append({
-                      "date": datetime.date.fromisoformat(day["date"]),
-                      "count": day["contributionCount"],
-                  })
-
-          contribution_days.sort(key=lambda item: item["date"])
-
-          def calculate_current_streak(days):
-              if not days:
-                  return 0
-
-              today = datetime.datetime.utcnow().date()
-              days_by_date = {item["date"]: item["count"] for item in days}
-
-              current_date = today
-
-              if days_by_date.get(current_date, 0) == 0:
-                  current_date = current_date - datetime.timedelta(days=1)
-
-              streak = 0
-
-              while days_by_date.get(current_date, 0) > 0:
-                  streak += 1
-                  current_date = current_date - datetime.timedelta(days=1)
-
-              return streak
-
-          def calculate_longest_streak(days):
-              longest = 0
-              current = 0
-
-              for item in days:
-                  if item["count"] > 0:
-                      current += 1
-                      longest = max(longest, current)
-                  else:
-                      current = 0
-
-              return longest
-
-          current_streak = calculate_current_streak(contribution_days)
-          longest_streak = calculate_longest_streak(contribution_days)
-
+          # languages
           language_stats = {}
 
           for repo in repos:
@@ -200,19 +230,17 @@ jobs:
           total_language_size = sum(item[1]["size"] for item in all_languages) or 1
 
           top_languages = []
-
           for lang, data in all_languages:
               percent = data["size"] / total_language_size * 100
-
               if percent >= 1:
                   top_languages.append((lang, data))
-
               if len(top_languages) == 5:
                   break
 
           if not top_languages:
               top_languages = all_languages[:5]
 
+          # helpers
           def arc_path(cx, cy, r, start_angle, end_angle):
               start = math.radians(start_angle)
               end = math.radians(end_angle)
@@ -223,129 +251,365 @@ jobs:
               y2 = cy + r * math.sin(end)
 
               large_arc = 1 if end_angle - start_angle > 180 else 0
+              return f"M {x1} {y1} A {r} {r} 0 {large_arc} 1 {x2} {y2}"
 
-              return f"M {x1:.2f} {y1:.2f} A {r} {r} 0 {large_arc} 1 {x2:.2f} {y2:.2f}"
+          icon_paths = {
+              "stars": 'M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25zm0 2.445L6.615 5.5a.75.75 0 01-.564.41l-3.097.45 2.24 2.184a.75.75 0 01.216.664l-.528 3.084 2.769-1.456a.75.75 0 01.698 0l2.77 1.456-.53-3.084a.75.75 0 01.216-.664l2.24-2.183-3.096-.45a.75.75 0 01-.564-.41L8 2.694v.001z',
+              "commits": 'M1.643 3.143L.427 1.927A.25.25 0 000 2.104V5.75c0 .138.112.25.25.25h3.646a.25.25 0 00.177-.427L2.715 4.215a6.5 6.5 0 11-1.18 4.458.75.75 0 10-1.493.154 8.001 8.001 0 101.6-5.684zM7.75 4a.75.75 0 01.75.75v2.992l2.028.812a.75.75 0 01-.557 1.392l-2.5-1A.75.75 0 017 8.25v-3.5A.75.75 0 017.75 4z',
+              "prs": 'M7.177 3.073L9.573.677A.25.25 0 0110 .854v4.792a.25.25 0 01-.427.177L7.177 3.427a.25.25 0 010-.354zM3.75 2.5a.75.75 0 100 1.5.75.75 0 000-1.5zm-2.25.75a2.25 2.25 0 113 2.122v5.256a2.251 2.251 0 11-1.5 0V5.372A2.25 2.25 0 011.5 3.25zM11 2.5h-1V4h1a1 1 0 011 1v5.628a2.251 2.251 0 101.5 0V5A2.5 2.5 0 0011 2.5zm1 10.25a.75.75 0 111.5 0 .75.75 0 01-1.5 0zM3.75 12a.75.75 0 100 1.5.75.75 0 000-1.5z',
+              "merge_pct": 'M13.442 2.558a.625.625 0 0 1 0 .884l-10 10a.625.625 0 1 1-.884-.884l10-10a.625.625 0 0 1 .884 0zM4.5 6a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm0 1a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zm7 6a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm0 1a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z',
+              "issues": 'M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm9 3a1 1 0 11-2 0 1 1 0 012 0zm-.25-6.25a.75.75 0 00-1.5 0v3.5a.75.75 0 001.5 0v-3.5z',
+              "contribs": 'M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z',
+          }
 
-          main_stats = [
-              ("Total Stars Earned", total_stars),
-              ("Total Repositories", repo_count),
-              ("Contributions last year", total_contributions),
-              ("Commits last year", total_commits),
+          stats_rows_data = [
+              ("stars", "Total Stars Earned:", str(total_stars)),
+              ("commits", "Total Commits (last year):", str(total_commits_last_year)),
+              ("prs", "Total PRs:", str(total_prs)),
+              ("merge_pct", "Merged PRs Percentage:", f"{merged_prs_percentage:.2f} %"),
+              ("issues", "Total Issues:", str(total_issues)),
+              ("contribs", "Contributed to (last year):", str(contributed_to_last_year)),
           ]
 
-          left_stats_svg = []
-          y = 108
+          # stats.svg
+          circumference = 2 * math.pi * 40
+          rank_dashoffset = circumference - (circumference * rank_progress / 100)
 
-          for label, value in main_stats:
-              left_stats_svg.append(f'''
-            <text x="95" y="{y}" class="stat-label">{escape(label)}</text>
-            <text x="420" y="{y}" class="stat-value">{value}</text>''')
-              y += 30
+          stats_rows_svg = []
+          for idx, (icon_key, label, value) in enumerate(stats_rows_data):
+              delay = 450 + idx * 150
+              translate_y = idx * 25
+              icon_path = icon_paths[icon_key]
+              stats_rows_svg.append(f'''
+            <g transform="translate(0, {translate_y})">
+              <g class="stagger" style="animation-delay: {delay}ms" transform="translate(25, 0)">
+                <svg data-testid="icon" class="icon" viewBox="0 0 16 16" version="1.1" width="16" height="16">
+                  <path fill-rule="evenodd" d="{icon_path}"/>
+                </svg>
 
-          language_rows = []
-          donut_paths = []
-          start_angle = -90
+                <text class="stat bold" x="25" y="12.5">{escape(label)}</text>
+                <text class="stat bold" x="219.01" y="12.5">{escape(value)}</text>
+              </g>
+            </g>''')
 
-          for index, (lang, data) in enumerate(top_languages):
-              percent = data["size"] / total_language_size * 100
-              color = data["color"]
-              y = 108 + index * 34
-              bar_width = max(18, 150 * (percent / 100))
+          title_stats = f"{DISPLAY_NAME}'s GitHub Stats, Rank: {grade}"
+          desc_stats = (
+              f"Total Stars Earned: {total_stars}, "
+              f"Total Commits (last year): {total_commits_last_year}, "
+              f"Total PRs: {total_prs}, "
+              f"Merged PRs Percentage: {merged_prs_percentage:.2f}, "
+              f"Total Issues: {total_issues}, "
+              f"Contributed to (last year): {contributed_to_last_year}"
+          )
 
-              language_rows.append(f'''
-            <circle cx="660" cy="{y - 6}" r="7" fill="{color}" />
-            <text x="680" y="{y}" class="lang-name">{escape(lang)}</text>
-            <text x="845" y="{y}" class="lang-percent">{percent:.2f}%</text>
-            <rect x="680" y="{y + 10}" width="150" height="6" rx="3" fill="#1F2937" />
-            <rect x="680" y="{y + 10}" width="{bar_width:.2f}" height="6" rx="3" fill="{color}" />''')
-
-              end_angle = start_angle + percent / 100 * 360
-
-              donut_paths.append(f'''
-            <path d="{arc_path(965, 145, 64, start_angle, end_angle)}"
-                  stroke="{color}"
-                  stroke-width="18"
-                  fill="none"
-                  stroke-linecap="butt" />''')
-
-              start_angle = end_angle
-
-          svg = f'''<svg width="1100" height="420" viewBox="0 0 1100 420" fill="none" xmlns="http://www.w3.org/2000/svg" role="img">
-            <defs>
-              <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-                <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000000" flood-opacity="0.25"/>
-              </filter>
-            </defs>
-
+          stats_svg = f'''<svg
+            width="467"
+            height="220"
+            viewBox="0 0 467 220"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            role="img"
+            aria-labelledby="descId"
+          >
+            <title id="titleId">{escape(title_stats)}</title>
+            <desc id="descId">{escape(desc_stats)}</desc>
             <style>
-              .panel-title {{ font: 700 18px 'Segoe UI', Ubuntu, Sans-Serif; fill: #58A6FF; }}
-              .stat-label {{ font: 600 16px 'Segoe UI', Ubuntu, Sans-Serif; fill: #C3D1D9; }}
-              .stat-value {{ font: 700 16px 'Segoe UI', Ubuntu, Sans-Serif; fill: #F0F6FC; text-anchor: end; }}
-              .lang-name {{ font: 600 16px 'Segoe UI', Ubuntu, Sans-Serif; fill: #C3D1D9; }}
-              .lang-percent {{ font: 700 15px 'Segoe UI', Ubuntu, Sans-Serif; fill: #F0F6FC; text-anchor: end; }}
-
-              .metric-number {{
-                font: 800 34px 'Segoe UI', Ubuntu, Sans-Serif;
-                fill: #F0F6FC;
-                text-anchor: middle;
-                dominant-baseline: middle;
+              .header {{
+                font: 600 18px 'Segoe UI', Ubuntu, Sans-Serif;
+                fill: #58A6FF;
+                animation: fadeInAnimation 0.8s ease-in-out forwards;
+              }}
+              @supports(-moz-appearance: auto) {{
+                .header {{ font-size: 15.5px; }}
               }}
 
-              .metric-label {{
-                font: 600 14px 'Segoe UI', Ubuntu, Sans-Serif;
+              .stat {{
+                font: 600 14px 'Segoe UI', Ubuntu, "Helvetica Neue", Sans-Serif;
                 fill: #C3D1D9;
-                text-anchor: middle;
+              }}
+              @supports(-moz-appearance: auto) {{
+                .stat {{ font-size:12px; }}
               }}
 
-              .grade {{
-                font: 800 34px 'Segoe UI', Ubuntu, Sans-Serif;
-                fill: #F0F6FC;
-                text-anchor: middle;
-                dominant-baseline: middle;
+              .stagger {{
+                opacity: 0;
+                animation: fadeInAnimation 0.3s ease-in-out forwards;
+              }}
+
+              .rank-text {{
+                font: 800 24px 'Segoe UI', Ubuntu, Sans-Serif;
+                fill: #C3D1D9;
+                animation: scaleInAnimation 0.3s ease-in-out forwards;
+              }}
+
+              .not_bold {{ font-weight: 400; }}
+              .bold {{ font-weight: 700; }}
+
+              .icon {{
+                fill: #1F6FEB;
+                display: block;
+              }}
+
+              .rank-circle-rim {{
+                stroke: #58A6FF;
+                fill: none;
+                stroke-width: 6;
+                opacity: 0.2;
+              }}
+
+              .rank-circle {{
+                stroke: #58A6FF;
+                stroke-dasharray: {circumference};
+                stroke-dashoffset: {circumference};
+                fill: none;
+                stroke-width: 6;
+                stroke-linecap: round;
+                opacity: 0.8;
+                transform-origin: -10px 8px;
+                transform: rotate(-90deg);
+                animation: rankAnimation 1s forwards ease-in-out;
+              }}
+
+              @keyframes rankAnimation {{
+                from {{
+                  stroke-dashoffset: {circumference};
+                }}
+                to {{
+                  stroke-dashoffset: {rank_dashoffset};
+                }}
+              }}
+
+              @keyframes scaleInAnimation {{
+                from {{
+                  transform: translate(-5px, 5px) scale(0);
+                }}
+                to {{
+                  transform: translate(-5px, 5px) scale(1);
+                }}
+              }}
+
+              @keyframes fadeInAnimation {{
+                from {{
+                  opacity: 0;
+                }}
+                to {{
+                  opacity: 1;
+                }}
               }}
             </style>
 
-            <rect x="18" y="18" width="1064" height="384" rx="20" fill="#0D1117" stroke="#1F2937" filter="url(#shadow)" />
+            <rect
+              data-testid="card-bg"
+              x="0.5"
+              y="0.5"
+              rx="4.5"
+              height="99%"
+              stroke="#e4e2e2"
+              width="466"
+              fill="#0D1117"
+              stroke-opacity="0"
+            />
 
-            <rect x="40" y="40" width="500" height="190" rx="18" fill="#111827" stroke="#1F2937" />
-            <rect x="560" y="40" width="500" height="190" rx="18" fill="#111827" stroke="#1F2937" />
-
-            <rect x="40" y="260" width="1020" height="120" rx="18" fill="#111827" stroke="#1F2937" />
-
-            <text x="65" y="72" class="panel-title">Yaroslav's GitHub Stats</text>
-            {''.join(left_stats_svg)}
-
-            <circle cx="470" cy="140" r="38" fill="none" stroke="#58A6FF" stroke-width="8"/>
-            <text x="470" y="140" class="grade">{grade}</text>
-
-            <text x="585" y="72" class="panel-title">Most Used Languages</text>
-            {''.join(language_rows)}
-
-            <circle cx="965" cy="145" r="64" fill="none" stroke="#1F2937" stroke-width="18"/>
-            {''.join(donut_paths)}
-
-            <line x1="380" y1="282" x2="380" y2="356" stroke="#1F2937" stroke-width="2"/>
-            <line x1="720" y1="282" x2="720" y2="356" stroke="#1F2937" stroke-width="2"/>
-
-            <g transform="translate(210 0)">
-              <text x="0" y="308" class="metric-number">{total_contributions}</text>
-              <text x="0" y="345" class="metric-label">Total Contributions</text>
+            <g data-testid="card-title" transform="translate(25, 35)">
+              <g transform="translate(0, 0)">
+                <text x="0" y="0" class="header" data-testid="header">{escape(DISPLAY_NAME)}'s GitHub Stats</text>
+              </g>
             </g>
 
-            <g transform="translate(550 0)">
-              <circle cx="0" cy="304" r="28" fill="none" stroke="#58A6FF" stroke-width="7"/>
-              <text x="0" y="304" class="metric-number">{current_streak}</text>
-              <text x="0" y="365" class="metric-label">Current Streak</text>
-            </g>
+            <g data-testid="main-card-body" transform="translate(0, 55)">
+              <g data-testid="rank-circle" transform="translate(390.5, 60)">
+                <circle class="rank-circle-rim" cx="-10" cy="8" r="40" />
+                <circle class="rank-circle" cx="-10" cy="8" r="40" />
+                <g class="rank-text">
+                  <text x="-5" y="3" alignment-baseline="central" dominant-baseline="central" text-anchor="middle" data-testid="level-rank-icon">{escape(grade)}</text>
+                </g>
+              </g>
 
-            <g transform="translate(890 0)">
-              <text x="0" y="308" class="metric-number">{longest_streak}</text>
-              <text x="0" y="345" class="metric-label">Longest Streak</text>
+              <svg x="0" y="0">
+                {''.join(stats_rows_svg)}
+              </svg>
             </g>
           </svg>'''
 
-          with open("profile/overview.svg", "w", encoding="utf-8") as file:
-              file.write(svg)
+          # top-langs.svg
+          donut_segments_svg = []
+          language_rows_svg = []
+
+          start_angle = -90
+          donut_cx = 116.66666666666667
+          donut_cy = 116.66666666666667
+          donut_r = 56.66666666666667
+
+          for idx, (lang, data) in enumerate(top_languages):
+              percent = data["size"] / total_language_size * 100
+              color = data["color"]
+              row_delay = 450 + idx * 150
+              donut_delay = 600 + idx * 100
+              row_translate_y = idx * 32
+
+              language_rows_svg.append(f'''
+                <g transform="translate(0, {row_translate_y})">
+                  <g class="stagger" style="animation-delay: {row_delay}ms">
+                    <circle cx="5" cy="6" r="5" fill="{escape(color)}" />
+                    <text data-testid="lang-name" x="15" y="10" class="lang-name">
+                      {escape(lang)} {percent:.2f}%
+                    </text>
+                  </g>
+                </g>''')
+
+              end_angle = start_angle + percent / 100 * 360
+              path_d = arc_path(donut_cx, donut_cy, donut_r, start_angle, end_angle)
+
+              donut_segments_svg.append(f'''
+                  <g class="stagger" style="animation-delay: {donut_delay}ms">
+                    <path
+                      data-testid="lang-donut"
+                      size="{percent:.2f}"
+                      d="{path_d}"
+                      stroke="{escape(color)}"
+                      fill="none"
+                      stroke-width="12">
+                    </path>
+                  </g>''')
+
+              start_angle = end_angle
+
+          title_langs = f"Most Used Languages for {DISPLAY_NAME}"
+          desc_langs = ", ".join(
+              f"{lang} {data['size'] / total_language_size * 100:.2f}%"
+              for lang, data in top_languages
+          )
+
+          top_langs_svg = f'''<svg
+            width="350"
+            height="215"
+            viewBox="0 0 350 215"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            role="img"
+            aria-labelledby="descId"
+          >
+            <title id="titleId">{escape(title_langs)}</title>
+            <desc id="descId">{escape(desc_langs)}</desc>
+            <style>
+              .header {{
+                font: 600 18px 'Segoe UI', Ubuntu, Sans-Serif;
+                fill: #58A6FF;
+                animation: fadeInAnimation 0.8s ease-in-out forwards;
+              }}
+              @supports(-moz-appearance: auto) {{
+                .header {{ font-size: 15.5px; }}
+              }}
+
+              @keyframes slideInAnimation {{
+                from {{
+                  width: 0;
+                }}
+                to {{
+                  width: calc(100%-100px);
+                }}
+              }}
+
+              @keyframes growWidthAnimation {{
+                from {{
+                  width: 0;
+                }}
+                to {{
+                  width: 100%;
+                }}
+              }}
+
+              .stat {{
+                font: 600 14px 'Segoe UI', Ubuntu, "Helvetica Neue", Sans-Serif;
+                fill: #C3D1D9;
+              }}
+              @supports(-moz-appearance: auto) {{
+                .stat {{ font-size:12px; }}
+              }}
+
+              .bold {{
+                font-weight: 700;
+              }}
+
+              .lang-name {{
+                font: 400 11px "Segoe UI", Ubuntu, Sans-Serif;
+                fill: #C3D1D9;
+              }}
+
+              .stagger {{
+                opacity: 0;
+                animation: fadeInAnimation 0.3s ease-in-out forwards;
+              }}
+
+              #rect-mask rect {{
+                animation: slideInAnimation 1s ease-in-out forwards;
+              }}
+
+              .lang-progress {{
+                animation: growWidthAnimation 0.6s ease-in-out forwards;
+              }}
+
+              @keyframes scaleInAnimation {{
+                from {{
+                  transform: translate(-5px, 5px) scale(0);
+                }}
+                to {{
+                  transform: translate(-5px, 5px) scale(1);
+                }}
+              }}
+
+              @keyframes fadeInAnimation {{
+                from {{
+                  opacity: 0;
+                }}
+                to {{
+                  opacity: 1;
+                }}
+              }}
+            </style>
+
+            <rect
+              data-testid="card-bg"
+              x="0.5"
+              y="0.5"
+              rx="4.5"
+              height="99%"
+              stroke="#e4e2e2"
+              width="349"
+              fill="#0D1117"
+              stroke-opacity="0"
+            />
+
+            <g data-testid="card-title" transform="translate(25, 35)">
+              <g transform="translate(0, 0)">
+                <text x="0" y="0" class="header" data-testid="header">Most Used Languages</text>
+              </g>
+            </g>
+
+            <g data-testid="main-card-body" transform="translate(0, 55)">
+              <svg data-testid="lang-items" x="25">
+                <g transform="translate(0, 0)">
+                  <g transform="translate(0, 0)">
+                    <g transform="translate(0, 0)">
+                      {''.join(language_rows_svg)}
+                    </g>
+
+                    <g transform="translate(125, -45)">
+                      <svg width="350" height="350">
+                        {''.join(donut_segments_svg)}
+                      </svg>
+                    </g>
+                  </g>
+                </g>
+              </svg>
+            </g>
+          </svg>'''
+
+          with open("profile/stats.svg", "w", encoding="utf-8") as file:
+              file.write(stats_svg)
+
+          with open("profile/top-langs.svg", "w", encoding="utf-8") as file:
+              file.write(top_langs_svg)
 
           PY
 
@@ -355,6 +619,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add profile/*.svg
+          git add profile/stats.svg profile/top-langs.svg
           git commit -m "Update profile cards" || exit 0
           git push
