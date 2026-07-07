@@ -19,7 +19,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Generate profile cards
+      - name: Generate profile overview
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_USERNAME: Sss330
@@ -36,7 +36,6 @@ jobs:
 
           USERNAME = os.environ["GITHUB_USERNAME"]
           TOKEN = os.environ["GITHUB_TOKEN"]
-
           API_URL = "https://api.github.com/graphql"
 
           now = datetime.datetime.utcnow()
@@ -45,14 +44,11 @@ jobs:
           query = """
           query($login: String!, $from: DateTime!, $to: DateTime!) {
             user(login: $login) {
-              login
-              name
               repositories(first: 100, ownerAffiliations: OWNER, privacy: PUBLIC) {
                 totalCount
                 nodes {
                   name
                   stargazerCount
-                  forkCount
                   languages(first: 10, orderBy: {field: SIZE, direction: DESC}) {
                     edges {
                       size
@@ -67,6 +63,12 @@ jobs:
               contributionsCollection(from: $from, to: $to) {
                 contributionCalendar {
                   totalContributions
+                  weeks {
+                    contributionDays {
+                      date
+                      contributionCount
+                    }
+                  }
                 }
                 totalCommitContributions
                 totalIssueContributions
@@ -105,10 +107,11 @@ jobs:
           repos = user["repositories"]["nodes"]
           repo_count = user["repositories"]["totalCount"]
 
-          total_stars = sum(repo["stargazerCount"] for repo in repos)
-
           contributions = user["contributionsCollection"]
-          total_contributions = contributions["contributionCalendar"]["totalContributions"]
+          calendar = contributions["contributionCalendar"]
+
+          total_stars = sum(repo["stargazerCount"] for repo in repos)
+          total_contributions = calendar["totalContributions"]
           total_commits = contributions["totalCommitContributions"]
           total_prs = contributions["totalPullRequestContributions"]
           total_issues = contributions["totalIssueContributions"]
@@ -127,60 +130,52 @@ jobs:
           else:
               grade = "C"
 
-          def write_stats_svg():
-              left_stats = [
-                  ("★ Total Stars Earned:", total_stars),
-                  ("⑂ Total Repositories:", repo_count),
-                  ("◌ Contributions last year:", total_contributions),
-                  ("↳ Commits last year:", total_commits),
-              ]
+          contribution_days = []
 
-              right_stats = []
+          for week in calendar["weeks"]:
+              for day in week["contributionDays"]:
+                  contribution_days.append({
+                      "date": datetime.date.fromisoformat(day["date"]),
+                      "count": day["contributionCount"],
+                  })
 
-              if total_prs > 0:
-                  right_stats.append(("↱ Pull Requests:", total_prs))
-              if total_issues > 0:
-                  right_stats.append(("● Issues:", total_issues))
-              if total_reviews > 0:
-                  right_stats.append(("◆ Reviews:", total_reviews))
+          contribution_days.sort(key=lambda item: item["date"])
 
-              left_svg = []
-              y = 62
+          def calculate_current_streak(days):
+              if not days:
+                  return 0
 
-              for label, value in left_stats:
-                  left_svg.append(f'<text x="25" y="{y}" class="stat">{escape(label)}</text>')
-                  left_svg.append(f'<text x="230" y="{y}" class="value">{value}</text>')
-                  y += 22
+              today = datetime.datetime.utcnow().date()
+              days_by_date = {item["date"]: item["count"] for item in days}
 
-              right_svg = []
-              y = 62
+              current_date = today
 
-              for label, value in right_stats:
-                  right_svg.append(f'<text x="300" y="{y}" class="stat">{escape(label)}</text>')
-                  right_svg.append(f'<text x="445" y="{y}" class="value">{value}</text>')
-                  y += 22
+              if days_by_date.get(current_date, 0) == 0:
+                  current_date = current_date - datetime.timedelta(days=1)
 
-              svg = f'''<svg width="495" height="165" viewBox="0 0 495 165" fill="none" xmlns="http://www.w3.org/2000/svg" role="img">
-            <style>
-              .header {{ font: 600 18px 'Segoe UI', Ubuntu, Sans-Serif; fill: #58A6FF; }}
-              .stat {{ font: 600 13px 'Segoe UI', Ubuntu, Sans-Serif; fill: #C3D1D9; }}
-              .value {{ font: 700 13px 'Segoe UI', Ubuntu, Sans-Serif; fill: #F0F6FC; }}
-              .grade {{ font: 700 28px 'Segoe UI', Ubuntu, Sans-Serif; fill: #C3D1D9; }}
-            </style>
+              streak = 0
 
-            <rect x="0.5" y="0.5" rx="4.5" width="494" height="164" fill="#0D1117" stroke="#30363D" stroke-opacity="0"/>
+              while days_by_date.get(current_date, 0) > 0:
+                  streak += 1
+                  current_date = current_date - datetime.timedelta(days=1)
 
-            <text x="25" y="35" class="header">Yaroslav's GitHub Stats</text>
+              return streak
 
-            {''.join(left_svg)}
-            {''.join(right_svg)}
+          def calculate_longest_streak(days):
+              longest = 0
+              current = 0
 
-            <circle cx="410" cy="118" r="28" fill="none" stroke="#388BFD" stroke-width="6"/>
-            <text x="392" y="127" class="grade">{grade}</text>
-          </svg>'''
+              for item in days:
+                  if item["count"] > 0:
+                      current += 1
+                      longest = max(longest, current)
+                  else:
+                      current = 0
 
-              with open("profile/stats.svg", "w", encoding="utf-8") as file:
-                  file.write(svg)
+              return longest
+
+          current_streak = calculate_current_streak(contribution_days)
+          longest_streak = calculate_longest_streak(contribution_days)
 
           language_stats = {}
 
@@ -204,14 +199,13 @@ jobs:
               reverse=True,
           )
 
-          total_all_language_size = sum(item[1]["size"] for item in all_languages) or 1
+          total_language_size = sum(item[1]["size"] for item in all_languages) or 1
 
           top_languages = []
 
           for lang, data in all_languages:
-              percent = data["size"] / total_all_language_size * 100
+              percent = data["size"] / total_language_size * 100
 
-              # Hide tiny/noisy languages like Dockerfile 0.59%
               if percent >= 1:
                   top_languages.append((lang, data))
 
@@ -234,52 +228,108 @@ jobs:
 
               return f"M {x1:.2f} {y1:.2f} A {r} {r} 0 {large_arc} 1 {x2:.2f} {y2:.2f}"
 
-          def write_top_languages_svg():
-              rows = []
-              donut = []
-              start_angle = -90
+          def stat_row(label, value, x, y):
+              return f'''
+            <text x="{x}" y="{y}" class="stat">{escape(label)}</text>
+            <text x="{x + 260}" y="{y}" class="value">{value}</text>'''
 
-              for index, (lang, data) in enumerate(top_languages):
-                  percent = data["size"] / total_all_language_size * 100
-                  color = data["color"]
-                  y = 60 + index * 23
+          stats_rows = []
 
-                  rows.append(f'''
-            <circle cx="30" cy="{y - 4}" r="5" fill="{color}" />
-            <text x="45" y="{y}" class="lang">{escape(lang)} {percent:.2f}%</text>''')
+          stats_rows.append(stat_row("★ Total Stars Earned:", total_stars, 70, 90))
+          stats_rows.append(stat_row("⑂ Total Repositories:", repo_count, 70, 116))
+          stats_rows.append(stat_row("◌ Contributions last year:", total_contributions, 70, 142))
+          stats_rows.append(stat_row("↳ Commits last year:", total_commits, 70, 168))
 
-                  end_angle = start_angle + percent / 100 * 360
+          optional_y = 90
 
-                  donut.append(f'''
-            <path d="{arc_path(255, 95, 42, start_angle, end_angle)}"
+          if total_prs > 0:
+              stats_rows.append(stat_row("↱ Pull Requests:", total_prs, 410, optional_y))
+              optional_y += 26
+
+          if total_issues > 0:
+              stats_rows.append(stat_row("● Issues:", total_issues, 410, optional_y))
+              optional_y += 26
+
+          if total_reviews > 0:
+              stats_rows.append(stat_row("◆ Reviews:", total_reviews, 410, optional_y))
+              optional_y += 26
+
+          language_rows = []
+          donut_paths = []
+
+          start_angle = -90
+
+          for index, (lang, data) in enumerate(top_languages):
+              percent = data["size"] / total_language_size * 100
+              color = data["color"]
+              y = 90 + index * 28
+
+              language_rows.append(f'''
+            <circle cx="685" cy="{y - 5}" r="7" fill="{color}" />
+            <text x="705" y="{y}" class="lang">{escape(lang)} {percent:.2f}%</text>''')
+
+              end_angle = start_angle + percent / 100 * 360
+
+              donut_paths.append(f'''
+            <path d="{arc_path(960, 128, 62, start_angle, end_angle)}"
                   stroke="{color}"
-                  stroke-width="10"
+                  stroke-width="16"
                   fill="none"
                   stroke-linecap="butt" />''')
 
-                  start_angle = end_angle
+              start_angle = end_angle
 
-              svg = f'''<svg width="350" height="165" viewBox="0 0 350 165" fill="none" xmlns="http://www.w3.org/2000/svg" role="img">
+          svg = f'''<svg width="1100" height="330" viewBox="0 0 1100 330" fill="none" xmlns="http://www.w3.org/2000/svg" role="img">
             <style>
-              .header {{ font: 600 18px 'Segoe UI', Ubuntu, Sans-Serif; fill: #58A6FF; }}
-              .lang {{ font: 400 11px 'Segoe UI', Ubuntu, Sans-Serif; fill: #C3D1D9; }}
+              .header {{ font: 700 24px 'Segoe UI', Ubuntu, Sans-Serif; fill: #58A6FF; }}
+              .stat {{ font: 600 15px 'Segoe UI', Ubuntu, Sans-Serif; fill: #C3D1D9; }}
+              .value {{ font: 700 15px 'Segoe UI', Ubuntu, Sans-Serif; fill: #F0F6FC; }}
+              .lang {{ font: 500 17px 'Segoe UI', Ubuntu, Sans-Serif; fill: #C3D1D9; }}
+              .big {{ font: 800 34px 'Segoe UI', Ubuntu, Sans-Serif; fill: #F0F6FC; }}
+              .label {{ font: 600 13px 'Segoe UI', Ubuntu, Sans-Serif; fill: #C3D1D9; }}
+              .muted {{ font: 400 12px 'Segoe UI', Ubuntu, Sans-Serif; fill: #8B949E; }}
+              .grade {{ font: 800 32px 'Segoe UI', Ubuntu, Sans-Serif; fill: #C3D1D9; }}
             </style>
 
-            <rect x="0.5" y="0.5" rx="4.5" width="349" height="164" fill="#0D1117" stroke="#30363D" stroke-opacity="0"/>
+            <rect x="0" y="0" width="1100" height="330" fill="#0D1117"/>
 
-            <text x="25" y="35" class="header">Most Used Languages</text>
+            <text x="70" y="45" class="header">Yaroslav's GitHub Stats</text>
+            {''.join(stats_rows)}
 
-            {''.join(rows)}
+            <circle cx="530" cy="132" r="33" fill="none" stroke="#58A6FF" stroke-width="8"/>
+            <text x="509" y="143" class="grade">{grade}</text>
 
-            <circle cx="255" cy="95" r="42" fill="none" stroke="#30363D" stroke-width="10"/>
-            {''.join(donut)}
+            <text x="680" y="45" class="header">Most Used Languages</text>
+            {''.join(language_rows)}
+
+            <circle cx="960" cy="128" r="62" fill="none" stroke="#30363D" stroke-width="16"/>
+            {''.join(donut_paths)}
+
+            <line x1="70" y1="220" x2="1030" y2="220" stroke="#30363D" stroke-width="4"/>
+
+            <g transform="translate(290 260)">
+              <text x="0" y="0" class="big">{total_contributions}</text>
+              <text x="-18" y="28" class="label">Total Contributions</text>
+            </g>
+
+            <g transform="translate(535 260)">
+              <circle cx="0" cy="-12" r="38" fill="none" stroke="#58A6FF" stroke-width="8"/>
+              <text x="-10" y="0" class="big">{current_streak}</text>
+              <text x="-42" y="38" class="label">Current Streak</text>
+            </g>
+
+            <g transform="translate(775 260)">
+              <text x="0" y="0" class="big">{longest_streak}</text>
+              <text x="-20" y="28" class="label">Longest Streak</text>
+            </g>
           </svg>'''
 
-              with open("profile/top-langs.svg", "w", encoding="utf-8") as file:
-                  file.write(svg)
+          with open("profile/overview.svg", "w", encoding="utf-8") as file:
+              file.write(svg)
 
-          write_stats_svg()
-          write_top_languages_svg()
+          with open("profile/stats.svg", "w", encoding="utf-8") as file:
+              file.write(svg)
+
           PY
 
           python3 generate_profile_cards.py
