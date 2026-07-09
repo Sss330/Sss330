@@ -68,7 +68,7 @@
         <g transform="translate(0, 128)">
           <g class="stagger" style="animation-delay: 1050ms">
             <circle cx="5" cy="6" r="5" fill="#00ADD8" />
-            <text x="15" y="10" class="lang-name">Go 1.83%</text>
+            <text x="15" y="10" class="lang-name">Go 1.84%</text>
           </g>
         </g>
 
@@ -76,19 +76,19 @@
           <svg width="350" height="350">
             
         <g class="stagger" style="animation-delay: 600ms">
-          <path d="M 116.67 60.00 A 56.66666666666667 56.66666666666667 0 1 1 64.79 93.87" stroke="#b07219" fill="none" stroke-width="12"></path>
+          <path d="M 116.67 60.00 A 56.66666666666667 56.66666666666667 0 1 1 64.78 93.88" stroke="#b07219" fill="none" stroke-width="12"></path>
         </g>
         <g class="stagger" style="animation-delay: 700ms">
-          <path d="M 64.79 93.87 A 56.66666666666667 56.66666666666667 0 0 1 84.07 70.31" stroke="#e34c26" fill="none" stroke-width="12"></path>
+          <path d="M 64.78 93.88 A 56.66666666666667 56.66666666666667 0 0 1 84.06 70.32" stroke="#e34c26" fill="none" stroke-width="12"></path>
         </g>
         <g class="stagger" style="animation-delay: 800ms">
-          <path d="M 84.07 70.31 A 56.66666666666667 56.66666666666667 0 0 1 103.17 61.63" stroke="#663399" fill="none" stroke-width="12"></path>
+          <path d="M 84.06 70.32 A 56.66666666666667 56.66666666666667 0 0 1 103.16 61.63" stroke="#663399" fill="none" stroke-width="12"></path>
         </g>
         <g class="stagger" style="animation-delay: 900ms">
-          <path d="M 103.17 61.63 A 56.66666666666667 56.66666666666667 0 0 1 109.81 60.42" stroke="#f1e05a" fill="none" stroke-width="12"></path>
+          <path d="M 103.16 61.63 A 56.66666666666667 56.66666666666667 0 0 1 109.79 60.42" stroke="#f1e05a" fill="none" stroke-width="12"></path>
         </g>
         <g class="stagger" style="animation-delay: 1000ms">
-          <path d="M 109.81 60.42 A 56.66666666666667 56.66666666666667 0 0 1 116.32 60.00" stroke="#00ADD8" fill="none" stroke-width="12"></path>
+          <path d="M 109.79 60.42 A 56.66666666666667 56.66666666666667 0 0 1 116.32 60.00" stroke="#00ADD8" fill="none" stroke-width="12"></path>
         </g>
           </svg>
         </g>
