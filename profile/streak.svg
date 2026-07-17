@@ -61,7 +61,7 @@
 
   <g transform="translate(175, 95)">
     <circle cx="0" cy="-5" r="33" class="ring" />
-    <text x="0" y="-5" class="big">10</text>
+    <text x="0" y="-5" class="big">0</text>
     <text x="0" y="45" class="label">Current Streak</text>
   </g>
 
