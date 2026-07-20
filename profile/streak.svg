@@ -54,14 +54,14 @@
   </g>
 
   <g transform="translate(70, 95)">
-    <text x="0" y="0" class="big">99</text>
+    <text x="0" y="0" class="big">104</text>
     <text x="0" y="28" class="label">Total Contributions</text>
     <text x="0" y="47" class="muted">last year</text>
   </g>
 
   <g transform="translate(175, 95)">
     <circle cx="0" cy="-5" r="33" class="ring" />
-    <text x="0" y="-5" class="big">1</text>
+    <text x="0" y="-5" class="big">2</text>
     <text x="0" y="45" class="label">Current Streak</text>
   </g>
 
