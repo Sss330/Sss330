@@ -16,12 +16,13 @@ API_URL = "https://api.github.com/graphql"
 
 os.makedirs("profile", exist_ok=True)
 
-now = datetime.datetime.utcnow()
-account_start = datetime.datetime(2020, 1, 1)
+now = datetime.datetime.now(datetime.timezone.utc)
 
-GITHUB_QUERY = """
-query($login: String!, $from: DateTime!, $to: DateTime!) {
+PROFILE_QUERY = """
+query($login: String!) {
   user(login: $login) {
+    createdAt
+
     repositories(first: 100, ownerAffiliations: OWNER, privacy: PUBLIC) {
       totalCount
       nodes {
@@ -50,7 +51,13 @@ query($login: String!, $from: DateTime!, $to: DateTime!) {
     issues(states: [OPEN, CLOSED]) {
       totalCount
     }
+  }
+}
+"""
 
+CONTRIBUTIONS_QUERY = """
+query($login: String!, $from: DateTime!, $to: DateTime!) {
+  user(login: $login) {
     contributionsCollection(from: $from, to: $to) {
       totalCommitContributions
       totalIssueContributions
@@ -96,14 +103,10 @@ query($login: String!, $from: DateTime!, $to: DateTime!) {
 """
 
 
-def fetch_github_data():
+def github_graphql(query, variables):
     payload = {
-        "query": GITHUB_QUERY,
-        "variables": {
-            "login": USERNAME,
-            "from": year_ago.isoformat() + "Z",
-            "to": now.isoformat() + "Z",
-        },
+        "query": query,
+        "variables": variables,
     }
 
     request = urllib.request.Request(
@@ -116,13 +119,134 @@ def fetch_github_data():
         },
     )
 
-    with urllib.request.urlopen(request) as response:
-        result = json.loads(response.read().decode("utf-8"))
+    try:
+        with urllib.request.urlopen(request, timeout=60) as response:
+            result = json.loads(response.read().decode("utf-8"))
+    except urllib.error.HTTPError as error:
+        body = error.read().decode("utf-8", errors="replace")
+        raise RuntimeError(
+            f"GitHub API returned HTTP {error.code}: {body}"
+        ) from error
+    except urllib.error.URLError as error:
+        raise RuntimeError(f"GitHub API request failed: {error}") from error
 
-    if "errors" in result:
+    if result.get("errors"):
         raise RuntimeError(result["errors"])
 
-    return result["data"]["user"]
+    user = result.get("data", {}).get("user")
+
+    if user is None:
+        raise RuntimeError(f"GitHub user '{USERNAME}' was not found")
+
+    return user
+
+
+def fetch_profile_data():
+    return github_graphql(
+        PROFILE_QUERY,
+        {
+            "login": USERNAME,
+        },
+    )
+
+
+def fetch_contributions_for_period(start_date, end_date):
+    user_data = github_graphql(
+        CONTRIBUTIONS_QUERY,
+        {
+            "login": USERNAME,
+            "from": start_date.isoformat().replace("+00:00", "Z"),
+            "to": end_date.isoformat().replace("+00:00", "Z"),
+        },
+    )
+
+    return user_data["contributionsCollection"]
+
+
+def fetch_all_time_contributions(account_created_at):
+    created_at = datetime.datetime.fromisoformat(
+        account_created_at.replace("Z", "+00:00")
+    )
+    current_time = datetime.datetime.now(datetime.timezone.utc)
+
+    total_commits = 0
+    total_contributions = 0
+    contributed_repositories = set()
+    all_contribution_days = []
+
+    for year in range(created_at.year, current_time.year + 1):
+        period_start = max(
+            created_at,
+            datetime.datetime(year, 1, 1, tzinfo=datetime.timezone.utc),
+        )
+        period_end = min(
+            current_time,
+            datetime.datetime(
+                year,
+                12,
+                31,
+                23,
+                59,
+                59,
+                tzinfo=datetime.timezone.utc,
+            ),
+        )
+
+        if period_start > period_end:
+            continue
+
+        contributions = fetch_contributions_for_period(
+            period_start,
+            period_end,
+        )
+
+        total_commits += contributions["totalCommitContributions"]
+        total_contributions += contributions["contributionCalendar"][
+            "totalContributions"
+        ]
+
+        for block_name in [
+            "commitContributionsByRepository",
+            "issueContributionsByRepository",
+            "pullRequestContributionsByRepository",
+            "pullRequestReviewContributionsByRepository",
+        ]:
+            for item in contributions.get(block_name, []):
+                repository = item.get("repository")
+
+                if repository and repository.get("nameWithOwner"):
+                    contributed_repositories.add(
+                        repository["nameWithOwner"]
+                    )
+
+        for week in contributions["contributionCalendar"]["weeks"]:
+            for day in week["contributionDays"]:
+                all_contribution_days.append(
+                    {
+                        "date": datetime.date.fromisoformat(day["date"]),
+                        "count": day["contributionCount"],
+                    }
+                )
+
+    unique_days = {
+        item["date"]: item["count"]
+        for item in all_contribution_days
+    }
+
+    contribution_days = [
+        {
+            "date": date,
+            "count": count,
+        }
+        for date, count in sorted(unique_days.items())
+    ]
+
+    return {
+        "total_commits": total_commits,
+        "total_contributions": total_contributions,
+        "contributed_to": len(contributed_repositories),
+        "contribution_days": contribution_days,
+    }
 
 
 def arc_path(cx, cy, r, start_angle, end_angle):
@@ -211,66 +335,40 @@ def get_language_color(name, fallback="#8B949E"):
     return colors.get(name, fallback)
 
 
-user = fetch_github_data()
+user = fetch_profile_data()
+all_time = fetch_all_time_contributions(user["createdAt"])
 
 repos = user["repositories"]["nodes"]
 repo_count = user["repositories"]["totalCount"]
 
-contributions = user["contributionsCollection"]
-calendar = contributions["contributionCalendar"]
-
 total_stars = sum(repo["stargazerCount"] for repo in repos)
-total_commits_last_year = contributions["totalCommitContributions"]
+total_commits = all_time["total_commits"]
+total_contributions = all_time["total_contributions"]
+contributed_to = all_time["contributed_to"]
+
 total_prs = user["pullRequests"]["totalCount"]
 merged_prs = user["mergedPullRequests"]["totalCount"]
 merged_prs_percentage = (merged_prs / total_prs * 100) if total_prs else 0
 total_issues = user["issues"]["totalCount"]
 
-contributed_repos = set()
-
-for block_name in [
-    "commitContributionsByRepository",
-    "issueContributionsByRepository",
-    "pullRequestContributionsByRepository",
-    "pullRequestReviewContributionsByRepository",
-]:
-    for item in contributions.get(block_name, []):
-        repo = item.get("repository")
-        if repo and repo.get("nameWithOwner"):
-            contributed_repos.add(repo["nameWithOwner"])
-
-contributed_to_last_year = len(contributed_repos)
-total_contributions_last_year = calendar["totalContributions"]
-
-contribution_days = []
-
-for week in calendar["weeks"]:
-    for day in week["contributionDays"]:
-        contribution_days.append(
-            {
-                "date": datetime.date.fromisoformat(day["date"]),
-                "count": day["contributionCount"],
-            }
-        )
-
-contribution_days.sort(key=lambda item: item["date"])
+contribution_days = all_time["contribution_days"]
 
 current_streak = calculate_current_streak(contribution_days)
 longest_streak = calculate_longest_streak(contribution_days)
 
-if total_contributions_last_year >= 1000:
+if total_contributions >= 1000:
     grade = "S"
-elif total_contributions_last_year >= 500:
+elif total_contributions >= 500:
     grade = "A+"
-elif total_contributions_last_year >= 300:
+elif total_contributions >= 300:
     grade = "A"
-elif total_contributions_last_year >= 200:
+elif total_contributions >= 200:
     grade = "A-"
-elif total_contributions_last_year >= 100:
+elif total_contributions >= 100:
     grade = "B+"
-elif total_contributions_last_year >= 50:
+elif total_contributions >= 50:
     grade = "B"
-elif total_contributions_last_year >= 25:
+elif total_contributions >= 25:
     grade = "B-"
 else:
     grade = "C"
@@ -338,7 +436,7 @@ ICON_PATHS = {
 
 stats_rows_data = [
     ("stars", "Total Stars Earned:", str(total_stars)),
-    ("commits", "Total Commits (last year):", str(total_commits_last_year)),
+    ("commits", "Total Commits:", str(total_commits)),
 ]
 
 if total_prs > 0:
@@ -348,7 +446,7 @@ if total_prs > 0:
 if total_issues > 0:
     stats_rows_data.append(("issues", "Total Issues:", str(total_issues)))
 
-stats_rows_data.append(("contribs", "Contributed to (last year):", str(contributed_to_last_year)))
+stats_rows_data.append(("contribs", "Contributed to:", str(contributed_to)))
 
 circumference = 2 * math.pi * 40
 rank_dashoffset = circumference - (circumference * rank_progress / 100)
@@ -783,9 +881,9 @@ def build_streak_svg():
   </g>
 
   <g transform="translate(70, 95)">
-    <text x="0" y="0" class="big">{total_contributions_last_year}</text>
+    <text x="0" y="0" class="big">{total_contributions}</text>
     <text x="0" y="28" class="label">Total Contributions</text>
-    <text x="0" y="47" class="muted">last year</text>
+    <text x="0" y="47" class="muted">all time</text>
   </g>
 
   <g transform="translate(175, 95)">
@@ -797,7 +895,7 @@ def build_streak_svg():
   <g transform="translate(285, 95)">
     <text x="0" y="0" class="big">{longest_streak}</text>
     <text x="0" y="28" class="label">Longest Streak</text>
-    <text x="0" y="47" class="muted">last year</text>
+    <text x="0" y="47" class="muted">all time</text>
   </g>
 </svg>'''
 
