@@ -17,7 +17,7 @@ API_URL = "https://api.github.com/graphql"
 os.makedirs("profile", exist_ok=True)
 
 now = datetime.datetime.utcnow()
-year_ago = now - datetime.timedelta(days=365)
+account_start = datetime.datetime(2020, 1, 1)
 
 GITHUB_QUERY = """
 query($login: String!, $from: DateTime!, $to: DateTime!) {
