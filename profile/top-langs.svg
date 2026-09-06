@@ -79,10 +79,10 @@
           <path d="M 116.67 60.00 A 56.66666666666667 56.66666666666667 0 1 1 62.67 99.48" stroke="#b07219" fill="none" stroke-width="12"></path>
         </g>
         <g class="stagger" style="animation-delay: 700ms">
-          <path d="M 62.67 99.48 A 56.66666666666667 56.66666666666667 0 0 1 77.25 75.96" stroke="#e34c26" fill="none" stroke-width="12"></path>
+          <path d="M 62.67 99.48 A 56.66666666666667 56.66666666666667 0 0 1 77.24 75.96" stroke="#e34c26" fill="none" stroke-width="12"></path>
         </g>
         <g class="stagger" style="animation-delay: 800ms">
-          <path d="M 77.25 75.96 A 56.66666666666667 56.66666666666667 0 0 1 92.96 65.20" stroke="#663399" fill="none" stroke-width="12"></path>
+          <path d="M 77.24 75.96 A 56.66666666666667 56.66666666666667 0 0 1 92.96 65.20" stroke="#663399" fill="none" stroke-width="12"></path>
         </g>
         <g class="stagger" style="animation-delay: 900ms">
           <path d="M 92.96 65.20 A 56.66666666666667 56.66666666666667 0 0 1 110.20 60.37" stroke="#00ADD8" fill="none" stroke-width="12"></path>
