@@ -44,31 +44,31 @@
         <g transform="translate(0, 0)">
           <g class="stagger" style="animation-delay: 450ms">
             <circle cx="5" cy="6" r="5" fill="#b07219" />
-            <text x="15" y="10" class="lang-name">Java 72.85%</text>
+            <text x="15" y="10" class="lang-name">Java 72.38%</text>
           </g>
         </g>
         <g transform="translate(0, 32)">
           <g class="stagger" style="animation-delay: 600ms">
             <circle cx="5" cy="6" r="5" fill="#e34c26" />
-            <text x="15" y="10" class="lang-name">HTML 9.89%</text>
+            <text x="15" y="10" class="lang-name">HTML 10.06%</text>
           </g>
         </g>
         <g transform="translate(0, 64)">
           <g class="stagger" style="animation-delay: 750ms">
             <circle cx="5" cy="6" r="5" fill="#f1e05a" />
-            <text x="15" y="10" class="lang-name">JavaScript 6.17%</text>
+            <text x="15" y="10" class="lang-name">JavaScript 6.28%</text>
           </g>
         </g>
         <g transform="translate(0, 96)">
           <g class="stagger" style="animation-delay: 900ms">
             <circle cx="5" cy="6" r="5" fill="#00ADD8" />
-            <text x="15" y="10" class="lang-name">Go 5.15%</text>
+            <text x="15" y="10" class="lang-name">Go 5.24%</text>
           </g>
         </g>
         <g transform="translate(0, 128)">
           <g class="stagger" style="animation-delay: 1050ms">
             <circle cx="5" cy="6" r="5" fill="#663399" />
-            <text x="15" y="10" class="lang-name">CSS 4.90%</text>
+            <text x="15" y="10" class="lang-name">CSS 4.98%</text>
           </g>
         </g>
 
@@ -76,19 +76,19 @@
           <svg width="350" height="350">
             
         <g class="stagger" style="animation-delay: 600ms">
-          <path d="M 116.67 60.00 A 56.66666666666667 56.66666666666667 0 1 1 60.52 124.30" stroke="#b07219" fill="none" stroke-width="12"></path>
+          <path d="M 116.67 60.00 A 56.66666666666667 56.66666666666667 0 1 1 60.76 125.94" stroke="#b07219" fill="none" stroke-width="12"></path>
         </g>
         <g class="stagger" style="animation-delay: 700ms">
-          <path d="M 60.52 124.30 A 56.66666666666667 56.66666666666667 0 0 1 66.57 90.19" stroke="#e34c26" fill="none" stroke-width="12"></path>
+          <path d="M 60.76 125.94 A 56.66666666666667 56.66666666666667 0 0 1 66.08 91.12" stroke="#e34c26" fill="none" stroke-width="12"></path>
         </g>
         <g class="stagger" style="animation-delay: 800ms">
-          <path d="M 66.57 90.19 A 56.66666666666667 56.66666666666667 0 0 1 80.31 73.20" stroke="#f1e05a" fill="none" stroke-width="12"></path>
+          <path d="M 66.08 91.12 A 56.66666666666667 56.66666666666667 0 0 1 79.79 73.64" stroke="#f1e05a" fill="none" stroke-width="12"></path>
         </g>
         <g class="stagger" style="animation-delay: 900ms">
-          <path d="M 80.31 73.20 A 56.66666666666667 56.66666666666667 0 0 1 96.03 63.89" stroke="#00ADD8" fill="none" stroke-width="12"></path>
+          <path d="M 79.79 73.64 A 56.66666666666667 56.66666666666667 0 0 1 95.69 64.03" stroke="#00ADD8" fill="none" stroke-width="12"></path>
         </g>
         <g class="stagger" style="animation-delay: 1000ms">
-          <path d="M 96.03 63.89 A 56.66666666666667 56.66666666666667 0 0 1 112.99 60.12" stroke="#663399" fill="none" stroke-width="12"></path>
+          <path d="M 95.69 64.03 A 56.66666666666667 56.66666666666667 0 0 1 112.93 60.12" stroke="#663399" fill="none" stroke-width="12"></path>
         </g>
           </svg>
         </g>
