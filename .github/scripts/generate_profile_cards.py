@@ -680,11 +680,27 @@ def fetch_wakatime_languages():
         },
     )
 
-    try:
+      try:
         with urllib.request.urlopen(request, timeout=30) as response:
             result = json.loads(response.read().decode("utf-8"))
-    except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError):
-        return None
+
+            print(
+                f"WakaTime HTTP status: {response.status}",
+                flush=True,
+            )
+            print(
+                "WakaTime is_up_to_date:",
+                (result.get("data") or {}).get("is_up_to_date"),
+                flush=True,
+            )
+
+    except urllib.error.HTTPError as error:
+        print(f"WakaTime HTTP error: {error.code}", flush=True)
+        raise
+
+    except (urllib.error.URLError, TimeoutError):
+        print("WakaTime connection failed", flush=True)
+        raise
 
     data = result.get("data", {})
     languages = data.get("languages", [])
