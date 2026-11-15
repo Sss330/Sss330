@@ -695,7 +695,12 @@ def fetch_wakatime_languages():
             )
 
     except urllib.error.HTTPError as error:
+        body = error.read().decode("utf-8", errors="replace")
+        body = body.replace(WAKATIME_API_KEY, "[REDACTED]")
+        body = body.replace(encoded_key, "[REDACTED]")
+
         print(f"WakaTime HTTP error: {error.code}", flush=True)
+        print(f"WakaTime response: {body[:2000]}", flush=True)
         raise
 
     except (urllib.error.URLError, TimeoutError):
