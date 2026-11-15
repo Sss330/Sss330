@@ -680,7 +680,7 @@ def fetch_wakatime_languages():
         },
     )
 
-      try:
+    try:
         with urllib.request.urlopen(request, timeout=30) as response:
             result = json.loads(response.read().decode("utf-8"))
 
