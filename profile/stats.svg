@@ -110,7 +110,7 @@
             </svg>
 
             <text class="stat bold" x="25" y="12.5">Total Commits:</text>
-            <text class="stat bold" x="219.01" y="12.5">274</text>
+            <text class="stat bold" x="219.01" y="12.5">275</text>
           </g>
         </g>
         <g transform="translate(0, 50)">
@@ -130,7 +130,7 @@
             </svg>
 
             <text class="stat bold" x="25" y="12.5">Merged PRs Percentage:</text>
-            <text class="stat bold" x="219.01" y="12.5">86.67 %</text>
+            <text class="stat bold" x="219.01" y="12.5">93.33 %</text>
           </g>
         </g>
         <g transform="translate(0, 100)">
